@@ -5,10 +5,10 @@ import { useReducer } from "react";
 import { ContractReadMethods } from "./ContractReadMethods";
 import { ContractVariables } from "./ContractVariables";
 import { ContractWriteMethods } from "./ContractWriteMethods";
-import { Address, Balance } from "~~/components/scaffold-eth";
-import { useDeployedContractInfo, useNetworkColor } from "~~/hooks/scaffold-eth";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
-import { ContractName } from "~~/utils/scaffold-eth/contract";
+import { Address, Balance } from "~~/src/components/scaffold-eth";
+import { useDeployedContractInfo, useNetworkColor } from "~~/src/hooks/scaffold-eth";
+import { useTargetNetwork } from "~~/src/hooks/scaffold-eth/useTargetNetwork";
+import { ContractName } from "~~/src/utils/scaffold-eth/contract";
 
 type ContractUIProps = {
   contractName: ContractName;
