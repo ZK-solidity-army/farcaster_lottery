@@ -25,6 +25,7 @@
     "next:build": "yarn workspace @se-2/nextjs build",
     "next:check-types": "yarn workspace @se-2/nextjs check-types",
     "next:format": "yarn workspace @se-2/nextjs format",
+    "next:frames": "yarn workspace @se-2/nextjs frames",
     "next:lint": "yarn workspace @se-2/nextjs lint",
     "precommit": "lint-staged",
     "prepare": "install-self-peers -- --ignore-scripts",

@@ -12,7 +12,7 @@ import {
   getInitialFormState,
   getParsedContractFunctionArgs,
   transformAbiFunction,
-} from "~~/app/debug/_components/contract";
+} from "~~/app/(site)/debug/_components/contract";
 import { useTargetNetwork } from "~~/src/hooks/scaffold-eth/useTargetNetwork";
 import { getParsedError, notification } from "~~/src/utils/scaffold-eth";
 

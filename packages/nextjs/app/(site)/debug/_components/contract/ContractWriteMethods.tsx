@@ -1,19 +1,24 @@
 import { Abi, AbiFunction } from "abitype";
-import { ReadOnlyFunctionForm } from "~~/app/debug/_components/contract";
+import { WriteOnlyFunctionForm } from "~~/app/(site)/debug/_components/contract";
 import { Contract, ContractName, GenericContract, InheritedFunctions } from "~~/src/utils/scaffold-eth/contract";
 
-export const ContractReadMethods = ({ deployedContractData }: { deployedContractData: Contract<ContractName> }) => {
+export const ContractWriteMethods = ({
+  onChange,
+  deployedContractData,
+}: {
+  onChange: () => void;
+  deployedContractData: Contract<ContractName>;
+}) => {
   if (!deployedContractData) {
     return null;
   }
 
   const functionsToDisplay = (
-    ((deployedContractData.abi || []) as Abi).filter(part => part.type === "function") as AbiFunction[]
+    (deployedContractData.abi as Abi).filter(part => part.type === "function") as AbiFunction[]
   )
     .filter(fn => {
-      const isQueryableWithParams =
-        (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length > 0;
-      return isQueryableWithParams;
+      const isWriteableFunction = fn.stateMutability !== "view" && fn.stateMutability !== "pure";
+      return isWriteableFunction;
     })
     .map(fn => {
       return {
@@ -24,17 +29,18 @@ export const ContractReadMethods = ({ deployedContractData }: { deployedContract
     .sort((a, b) => (b.inheritedFrom ? b.inheritedFrom.localeCompare(a.inheritedFrom) : 1));
 
   if (!functionsToDisplay.length) {
-    return <>No read methods</>;
+    return <>No write methods</>;
   }
 
   return (
     <>
-      {functionsToDisplay.map(({ fn, inheritedFrom }) => (
-        <ReadOnlyFunctionForm
+      {functionsToDisplay.map(({ fn, inheritedFrom }, idx) => (
+        <WriteOnlyFunctionForm
           abi={deployedContractData.abi as Abi}
-          contractAddress={deployedContractData.address}
+          key={`${fn.name}-${idx}}`}
           abiFunction={fn}
-          key={fn.name}
+          onChange={onChange}
+          contractAddress={deployedContractData.address}
           inheritedFrom={inheritedFrom}
         />
       ))}
