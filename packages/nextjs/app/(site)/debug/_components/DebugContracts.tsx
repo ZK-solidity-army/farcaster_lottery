@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { BarsArrowUpIcon } from "@heroicons/react/20/solid";
-import { ContractUI } from "~~/app/debug/_components/contract";
+import { ContractUI } from "~~/app/(site)/debug/_components/contract";
 import { ContractName } from "~~/src/utils/scaffold-eth/contract";
 import { getAllContracts } from "~~/src/utils/scaffold-eth/contractsData";
 
