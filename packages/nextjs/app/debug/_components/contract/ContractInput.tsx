@@ -11,8 +11,8 @@ import {
   InputBase,
   IntegerInput,
   IntegerVariant,
-} from "~~/components/scaffold-eth";
-import { AbiParameterTuple } from "~~/utils/scaffold-eth/contract";
+} from "~~/src/components/scaffold-eth";
+import { AbiParameterTuple } from "~~/src/utils/scaffold-eth/contract";
 
 type ContractInputProps = {
   setForm: Dispatch<SetStateAction<Record<string, any>>>;

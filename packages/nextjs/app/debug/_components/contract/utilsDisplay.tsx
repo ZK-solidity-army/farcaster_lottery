@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { TransactionBase, TransactionReceipt, formatEther, isAddress } from "viem";
-import { Address } from "~~/components/scaffold-eth";
-import { replacer } from "~~/utils/scaffold-eth/common";
+import { Address } from "~~/src/components/scaffold-eth";
+import { replacer } from "~~/src/utils/scaffold-eth/common";
 
 type DisplayContent =
   | string

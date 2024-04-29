@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { PaginationButton, SearchBar, TransactionsTable } from "./_components";
 import type { NextPage } from "next";
 import { hardhat } from "viem/chains";
-import { useFetchBlocks } from "~~/hooks/scaffold-eth";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
-import { notification } from "~~/utils/scaffold-eth";
+import { useFetchBlocks } from "~~/src/hooks/scaffold-eth";
+import { useTargetNetwork } from "~~/src/hooks/scaffold-eth/useTargetNetwork";
+import { notification } from "~~/src/utils/scaffold-eth";
 
 const BlockExplorer: NextPage = () => {
   const { blocks, transactionReceipts, currentPage, totalBlocks, setCurrentPage, error } = useFetchBlocks();

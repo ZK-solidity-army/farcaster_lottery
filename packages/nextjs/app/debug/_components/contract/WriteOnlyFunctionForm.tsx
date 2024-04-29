@@ -13,9 +13,9 @@ import {
   getParsedContractFunctionArgs,
   transformAbiFunction,
 } from "~~/app/debug/_components/contract";
-import { IntegerInput } from "~~/components/scaffold-eth";
-import { useTransactor } from "~~/hooks/scaffold-eth";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
+import { IntegerInput } from "~~/src/components/scaffold-eth";
+import { useTransactor } from "~~/src/hooks/scaffold-eth";
+import { useTargetNetwork } from "~~/src/hooks/scaffold-eth/useTargetNetwork";
 
 type WriteOnlyFunctionFormProps = {
   abi: Abi;

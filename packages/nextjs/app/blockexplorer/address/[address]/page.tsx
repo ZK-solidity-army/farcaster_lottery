@@ -3,7 +3,7 @@ import path from "path";
 import { hardhat } from "viem/chains";
 import { AddressComponent } from "~~/app/blockexplorer/_components/AddressComponent";
 import deployedContracts from "~~/contracts/deployedContracts";
-import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
+import { GenericContractsDeclaration } from "~~/src/utils/scaffold-eth/contract";
 
 type PageProps = {
   params: { address: string };
