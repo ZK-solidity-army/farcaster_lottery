@@ -1,6 +1,9 @@
 {
   "name": "se-2",
   "version": "0.0.1",
+  "engines": {
+    "node": "18.x"
+  },
   "private": true,
   "workspaces": {
     "packages": [
@@ -21,7 +24,6 @@
     "hardhat:lint": "yarn workspace @se-2/hardhat lint",
     "hardhat:lint-staged": "yarn workspace @se-2/hardhat lint-staged",
     "hardhat:test": "yarn workspace @se-2/hardhat test",
-    "postinstall": "husky install",
     "next:build": "yarn workspace @se-2/nextjs build",
     "next:check-types": "yarn workspace @se-2/nextjs check-types",
     "next:format": "yarn workspace @se-2/nextjs format",
@@ -29,6 +31,7 @@
     "next:lint": "yarn workspace @se-2/nextjs lint",
     "precommit": "lint-staged",
     "prepare": "install-self-peers -- --ignore-scripts",
+    "build": "yarn workspace @se-2/nextjs build",
     "start": "yarn workspace @se-2/nextjs start",
     "start:dev": "yarn workspace @se-2/nextjs dev",
     "test": "yarn hardhat:test",

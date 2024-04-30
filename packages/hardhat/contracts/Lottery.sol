@@ -9,5 +9,5 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 contract Lottery is Ownable {
 
   /// @notice Constructor function
-  constructor() Ownable() {}
+  constructor() Ownable(msg.sender) {}
 }

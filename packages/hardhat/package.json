@@ -17,7 +17,6 @@
     "verify": "hardhat etherscan-verify"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "~4.8.1",
     "@typechain/ethers-v6": "~0.5.1",
     "dotenv": "~16.0.3",
     "envfile": "~6.18.0",
@@ -30,6 +29,7 @@
     "@nomicfoundation/hardhat-ethers": "~3.0.5",
     "@nomicfoundation/hardhat-network-helpers": "~1.0.6",
     "@nomicfoundation/hardhat-verify": "~2.0.3",
+    "@openzeppelin/contracts": "^5.0.2",
     "@typechain/ethers-v5": "~10.1.0",
     "@typechain/hardhat": "~9.1.0",
     "@types/eslint": "~8",

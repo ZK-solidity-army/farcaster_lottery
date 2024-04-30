@@ -13,7 +13,7 @@ contract LotteryDeployer is Ownable {
 
   /// @notice Constructor function
   /// @dev Initializes the contract setting the deployer as the owner
-  constructor() Ownable() {}
+  constructor() Ownable(msg.sender) {}
 
   /// @notice Creates a new Lottery contract
   /// @dev Deploys a new Lottery contract and stores the address in the lotteries mapping

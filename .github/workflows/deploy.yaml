@@ -1,0 +1,27 @@
+name: deploy
+
+on:
+  workflow_run:
+    workflows:
+      - lint
+    branches: main
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.repository_owner == 'ZK-solidity-army' }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - id: deploy
+      name: Deploy to dokku
+      uses: dokku/github-action@v1.1.3
+      with:
+          git_push_flags: '--force'
+          git_remote_url: 'ssh://dokku@get2gether.ru/farcaster-lottery'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
