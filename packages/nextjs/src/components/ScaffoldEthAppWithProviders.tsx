@@ -5,7 +5,7 @@ import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowki
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { Toaster } from "react-hot-toast";
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider, useAccount } from "wagmi";
 import { Footer } from "~~/src/components/Footer";
 import { Header } from "~~/src/components/Header";
 import { BlockieAvatar } from "~~/src/components/scaffold-eth";
@@ -15,6 +15,7 @@ import { useGlobalState } from "~~/src/services/store/store";
 import { wagmiConfig } from "~~/src/services/web3/wagmiConfig";
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
+  const account = useAccount();
   const price = useNativeCurrencyPrice();
   const setNativeCurrencyPrice = useGlobalState(state => state.setNativeCurrencyPrice);
 
@@ -27,7 +28,7 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        <Header />
+        {account.isConnected && <Header />}
         <main className="relative flex flex-col flex-1">{children}</main>
         <Footer />
       </div>
