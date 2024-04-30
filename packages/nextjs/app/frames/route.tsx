@@ -1,7 +1,7 @@
 import { frames } from "./frames";
 import { Button } from "frames.js/next";
 
-export const GET = frames(async () => {
+const handler = frames(async () => {
   return {
     image: (
       <div tw="w-full h-full justify-center items-center flex flex-col">
@@ -11,9 +11,15 @@ export const GET = frames(async () => {
     ),
     textInput: "Lottery name",
     buttons: [
-      <Button key={1} action="post" target="/lottery/create">
+      <Button key={0} action="post" target="/lottery/list">
+        List my lotteries
+      </Button>,
+      <Button key={1} action="tx" target="/lottery/create/txdata" post_url="/lottery/create">
         Create a Lottery
       </Button>,
     ],
   };
 });
+
+export const GET = handler;
+export const POST = handler;

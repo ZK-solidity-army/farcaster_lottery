@@ -1597,6 +1597,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/curves@npm:^1.3.0":
+  version: 1.4.0
+  resolution: "@noble/curves@npm:1.4.0"
+  dependencies:
+    "@noble/hashes": 1.4.0
+  checksum: 0014ff561d16e98da4a57e2310a4015e4bdab3b1e1eafcd18d3f9b955c29c3501452ca5d702fddf8ca92d570bbeadfbe53fe16ebbd81a319c414f739154bb26b
+  languageName: node
+  linkType: hard
+
 "@noble/hashes@npm:1.2.0, @noble/hashes@npm:~1.2.0":
   version: 1.2.0
   resolution: "@noble/hashes@npm:1.2.0"
@@ -1618,7 +1627,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.4.0":
+"@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.4.0":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: 8ba816ae26c90764b8c42493eea383716396096c5f7ba6bea559993194f49d80a73c081f315f4c367e51bd2d5891700bcdfa816b421d24ab45b41cb03e4f3342
@@ -2448,6 +2457,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ~5.40.0
     "@uniswap/sdk-core": ~4.0.1
     "@uniswap/v2-sdk": ~3.0.1
+    "@xmtp/frames-validator": ^0.6.0
     abitype: 1.0.2
     autoprefixer: ~10.4.12
     blo: ~1.0.1
@@ -4374,6 +4384,18 @@ __metadata:
     webpack-dev-server:
       optional: true
   checksum: 75f0e54681796d567a71ac3e2781d2901a8d8cf1cdfc82f261034dddac59a8343e8c3bc5e32b4bb9d6766759ba49fb29a5cd86ef1701d79c506fe886bb63ac75
+  languageName: node
+  linkType: hard
+
+"@xmtp/frames-validator@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@xmtp/frames-validator@npm:0.6.0"
+  dependencies:
+    "@noble/curves": ^1.3.0
+    "@noble/hashes": ^1.4.0
+    "@xmtp/proto": 3.45.0
+    viem: ^2.7.14
+  checksum: 6dfb4631b7c6bb7c214e9d02bfa0c0d078240b6b14efc053c2013cfa59cc88481a68563a4a1b4d41a6b36d49106d7ff696a757205e1a803ffa886e2c565d9032
   languageName: node
   linkType: hard
 
@@ -15464,7 +15486,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.7.8":
+"viem@npm:^2.7.14, viem@npm:^2.7.8":
   version: 2.9.28
   resolution: "viem@npm:2.9.28"
   dependencies:
