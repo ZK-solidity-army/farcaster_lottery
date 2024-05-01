@@ -4,7 +4,7 @@ import { CHAIN } from "~~/config";
 import { getContract } from "~~/src/utils/getContract";
 
 export const POST = () => {
-  const contract = getContract("LotteryDeployer");
+  const contract = getContract("LotteryDeployer", CHAIN);
 
   return NextResponse.json({
     chainId: `eip155:${CHAIN.id}`,
