@@ -38,8 +38,12 @@ contract Lottery is AccessControl {
     /// @dev List of bet slots
     address[] _slots;
 
-    constructor(uint256 _closingTime)  {
-        betsClosingTime = _closingTime;
+    constructor(uint256 duration)  {
+        if (duration <= 0 || duration > 14 days) {
+            betsClosingTime = block.timestamp + 14 days;
+        } else {
+            betsClosingTime = block.timestamp + duration;
+        }
 
         //TODO: make sure if the msg.sender is indeed the starter and not the proxy contract
         _grantRole(STARTER_ROLE, msg.sender);
