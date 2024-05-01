@@ -29,7 +29,7 @@ contract Lottery is AccessControl {
     uint256 public prizePool;
 
     /// @notice Flag indicating whether the lottery is open for bets or not
-    bool public betsOpen;
+    bool public betsOpen = true;
 
     /// @notice Timestamp of the lottery closing time
     uint256 public betsClosingTime;

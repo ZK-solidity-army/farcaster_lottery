@@ -1,8 +1,6 @@
 import deployedContracts from "~~/contracts/deployedContracts";
-import { ChainWithAttributes } from "~~/src/utils/scaffold-eth";
 
-export const getContract = (contractName: string, targetNetwork: ChainWithAttributes) => {
-  const chainId = targetNetwork.id;
+export const getContract = (contractName: string, chainId: number) => {
   if (!(chainId in deployedContracts)) {
     throw new Error(`Chain ${chainId} not supported`);
   }
