@@ -1,8 +1,13 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
+import { useWriteContract } from "wagmi";
+import { WriteContractErrorType } from "wagmi/actions";
 import create from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import Transaction from "~~/src/components/Transaction";
+import { useTargetNetwork } from "~~/src/hooks/scaffold-eth/useTargetNetwork";
+import { getContract } from "~~/src/utils/getContract";
 
 type CreateLotteryState = {
   title: string;
@@ -28,20 +33,68 @@ const useCreateLottery = create<CreateLotteryState>(set => ({
 
 export default function CreateLottery() {
   const [page, setPage] = useState(0);
+  const [createLotteryTxHash, setCreateLotteryTxHash] = useState("");
+  const [createLotteryError, setCreateLotteryError] = useState("");
+  const [isLoading, setLoading] = useState(false);
+
+  const onRestart = useCallback(() => {
+    setPage(0);
+    setCreateLotteryError("");
+  }, [setCreateLotteryError, setPage]);
+
   return (
     <div className="lg:grid grid-cols-2 px-[5vw] py-[5vh] flex flex-col-reverse">
       <div className="grid grid-rows-5 mt-5 md:mt-0">
-        <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
-          <SetTitleForm index={0} page={page} className="w-full absolute" />
-          <SetDateForm index={1} page={page} className="w-full translate-x-full absolute" />
-          <SetCreatorFeeForm index={2} page={page} className="w-full translate-x-full absolute" />
-          <SetDepositForm index={3} page={page} className="w-full translate-x-full absolute" />
-          <ReportForm index={4} page={page} className="w-full translate-x-full absolute" />
-        </div>
+        {!createLotteryError ? (
+          <>
+            <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
+              {isLoading ? (
+                <div className="mt-10 mx-auto">
+                  <Loader />
+                </div>
+              ) : (
+                <>
+                  <SetTitleForm index={0} page={page} className="w-full absolute" />
+                  <SetDateForm index={1} page={page} className="w-full translate-x-full absolute" />
+                  <SetCreatorFeeForm index={2} page={page} className="w-full translate-x-full absolute" />
+                  <SetDepositForm index={3} page={page} className="w-full translate-x-full absolute" />
+                  <ReportForm index={4} page={page} className="w-full translate-x-full absolute" />
+                </>
+              )}
+              {createLotteryTxHash && (
+                <div className="text-center">
+                  <Transaction txHash={createLotteryTxHash as `0x${string}`} />
+                </div>
+              )}
+            </div>
 
-        <div className="text-center">
-          <Controls pages={5} page={page} setPage={setPage} />
-        </div>
+            <div className="text-center">
+              <Controls
+                pages={5}
+                page={page}
+                isLoading={isLoading}
+                setPage={setPage}
+                setCreateLotteryError={setCreateLotteryError}
+                setCreateLotteryTxHash={setCreateLotteryTxHash}
+                setLoading={setLoading}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
+              <h2 className="md:text-3xl row-start-2 w-64 text-center mx-auto">
+                You won&lsquo;t be able to create transaction
+              </h2>
+              <div className="text-center row-start-4 text-red-500 w-64 text-center mx-auto">{createLotteryError}</div>
+            </div>
+            <div className="text-center">
+              <button className={"btn btn-primary md:btn-lg w-36 md:w-64"} onClick={onRestart}>
+                Try again
+              </button>
+            </div>
+          </>
+        )}
       </div>
       <div className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] relative ">
         <Image src="/img/pic2.png" alt="pic1" className="object-contain rounded rounded-3xl" fill={true} />
@@ -50,25 +103,81 @@ export default function CreateLottery() {
   );
 }
 
-function Controls({ page, pages, setPage }: { page: number; pages: number; setPage: (page: number) => void }) {
-  const onNext = useCallback(() => page < pages - 1 && setPage(page + 1), [page, setPage]);
-  const onPrev = useCallback(() => page > 0 && setPage(page - 1), [page, setPage]);
+function Controls({
+  page,
+  pages,
+  isLoading,
+  setPage,
+  setLoading,
+  setCreateLotteryTxHash,
+  setCreateLotteryError,
+}: {
+  page: number;
+  pages: number;
+  isLoading: boolean;
+  setPage: (page: number) => void;
+  setLoading: (loading: boolean) => void;
+  setCreateLotteryTxHash: (hash: string) => void;
+  setCreateLotteryError: (error: string) => void;
+}) {
+  const { targetNetwork } = useTargetNetwork();
+  const { writeContract } = useWriteContract();
+  const contract = useMemo(() => getContract("LotteryDeployer", targetNetwork), [targetNetwork]);
 
-  let nextClassName = page == 0 ? "w-36 md:w-64" : "";
+  const onNext = useCallback(() => page < pages - 1 && setPage(page + 1), [page, pages, setPage]);
+  const onPrev = useCallback(() => page > 0 && setPage(page - 1), [page, setPage]);
+  const onSubmit = useCallback(() => {
+    setLoading(true);
+    writeContract(
+      {
+        address: contract.address,
+        abi: contract.abi,
+        functionName: "createLottery",
+      },
+      {
+        onSuccess: (hash: `0x${string}`) => {
+          setCreateLotteryTxHash(hash);
+          setCreateLotteryError("");
+        },
+        onError: (error: WriteContractErrorType) => {
+          setLoading(false);
+          setCreateLotteryError(error.message);
+          setCreateLotteryTxHash("");
+        },
+        onSettled: (hash?: `0x${string}`, error?: WriteContractErrorType | null) => {
+          if (error) {
+            setLoading(false);
+            const errorMessage = "shortMessage" in error ? error.shortMessage : error.message;
+            setCreateLotteryError(errorMessage);
+          }
+        },
+      },
+    );
+  }, [contract, writeContract, setLoading, setCreateLotteryTxHash, setCreateLotteryError]);
+
+  const nextClassName = page == 0 ? "w-36 md:w-64" : "";
   const prevClassName = page == 0 ? "" : "md:w-36 w-32";
-  const nextTitle = page === pages - 1 ? "Create" : "Next";
-  nextClassName += page === pages - 1 ? "btn-secondary" : "";
 
   return (
     <div className="flex flex-row justify-center">
       {page !== 0 && (
-        <button className={twMerge("btn btn-primary md:btn-lg mr-4", prevClassName)} onClick={onPrev}>
+        <button
+          className={twMerge("btn btn-primary md:btn-lg mr-4", prevClassName)}
+          onClick={onPrev}
+          disabled={isLoading}
+        >
           &laquo; Back
         </button>
       )}
-      <button className={twMerge("btn btn-primary md:btn-lg", nextClassName)} onClick={onNext}>
-        {nextTitle} &raquo;
-      </button>
+      {page !== pages - 1 ? (
+        <button className={twMerge("btn btn-primary md:btn-lg", nextClassName)} onClick={onNext} disabled={isLoading}>
+          Next &raquo;
+        </button>
+      ) : (
+        <button className={"btn btn-secondary md:btn-lg"} onClick={onSubmit} disabled={isLoading}>
+          Create &raquo;
+        </button>
+      )}
     </div>
   );
 }
@@ -224,3 +333,50 @@ const generateTransitionClass = (index: number, page: number) => {
   }
   return className;
 };
+
+function Loader() {
+  return (
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200">
+      <g>
+        <circle r="20" fill="#ffa400" cy="50" cx="30">
+          <animate
+            begin="-0.5s"
+            values="30;70;30"
+            keyTimes="0;0.5;1"
+            dur="1s"
+            repeatCount="indefinite"
+            attributeName="cx"
+          ></animate>
+        </circle>
+        <circle r="20" fill="#342308" cy="50" cx="70">
+          <animate
+            begin="0s"
+            values="30;70;30"
+            keyTimes="0;0.5;1"
+            dur="1s"
+            repeatCount="indefinite"
+            attributeName="cx"
+          ></animate>
+        </circle>
+        <circle r="20" fill="#ffa400" cy="50" cx="30">
+          <animate
+            begin="-0.5s"
+            values="30;70;30"
+            keyTimes="0;0.5;1"
+            dur="1s"
+            repeatCount="indefinite"
+            attributeName="cx"
+          ></animate>
+          <animate
+            repeatCount="indefinite"
+            dur="1s"
+            keyTimes="0;0.499;0.5;1"
+            calcMode="discrete"
+            values="0;0;1;1"
+            attributeName="fill-opacity"
+          ></animate>
+        </circle>
+      </g>
+    </svg>
+  );
+}
