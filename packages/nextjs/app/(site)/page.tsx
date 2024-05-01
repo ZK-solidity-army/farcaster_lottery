@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import CreateLottery from "./_components/CreateLottery";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
@@ -27,9 +28,7 @@ export default function HomePage() {
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center"></h1>
-        </div>
+        <CreateLottery />
       </div>
     </>
   );
