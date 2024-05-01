@@ -62,7 +62,15 @@ yarn start:dev
 ## open http://localhost:3000
 
 ## start nextjs frames farcaster 
+## it's need only post localhost:3000 to farcaster
+
+## install ngrok for macos (https://ngrok.com/download)
+ brew install ngrok/ngrok/ngrok
+## register ngrok account and generate api key, then set it to global config
+ngrok config add-authtoken <your-api-key>
+## start ngrok
 ngrok http 3000
+
 yarn next:frames
 
 ```
