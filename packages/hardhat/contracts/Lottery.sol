@@ -43,6 +43,9 @@ contract Lottery is AccessControl {
 
         //TODO: make sure if the msg.sender is indeed the starter and not the proxy contract
         _grantRole(STARTER_ROLE, msg.sender);
+
+        //TODO: replace Vitalik's wallet with a more appropriate address.
+        _grantRole(DEVELOPER_ROLE, address(0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045));
     }
 
     /// @notice checks if the lottery is at open state and the current block timestamp is lower than the lottery closing date
