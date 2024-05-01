@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
-import { useWriteContract } from "wagmi";
+import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import { WriteContractErrorType } from "wagmi/actions";
 import create from "zustand";
 import { useShallow } from "zustand/react/shallow";
@@ -122,12 +123,26 @@ function Controls({
 }) {
   const { targetNetwork } = useTargetNetwork();
   const { writeContract } = useWriteContract();
-  const contract = useMemo(() => getContract("LotteryDeployer", targetNetwork), [targetNetwork]);
+  const publicClient = usePublicClient({
+    chainId: targetNetwork.id,
+  });
+  const contract = useMemo(() => getContract("LotteryDeployer", targetNetwork.id), [targetNetwork]);
+  const account = useAccount();
+  const router = useRouter();
 
   const onNext = useCallback(() => page < pages - 1 && setPage(page + 1), [page, pages, setPage]);
   const onPrev = useCallback(() => page > 0 && setPage(page - 1), [page, setPage]);
   const onSubmit = useCallback(() => {
     setLoading(true);
+    if (!publicClient) {
+      setCreateLotteryError("Public client is not initialized");
+      return;
+    }
+    if (!account || !account.address) {
+      setCreateLotteryError("Account is not connected");
+      return;
+    }
+
     writeContract(
       {
         address: contract.address,
@@ -144,16 +159,55 @@ function Controls({
           setCreateLotteryError(error.message);
           setCreateLotteryTxHash("");
         },
-        onSettled: (hash?: `0x${string}`, error?: WriteContractErrorType | null) => {
+        onSettled: async (hash?: `0x${string}`, error?: WriteContractErrorType | null) => {
           if (error) {
             setLoading(false);
             const errorMessage = "shortMessage" in error ? error.shortMessage : error.message;
             setCreateLotteryError(errorMessage);
           }
+
+          if (!account.address) return;
+
+          const lotteryCount = await publicClient.readContract({
+            address: contract.address,
+            abi: contract.abi,
+            functionName: "lotteryCount",
+            args: [account.address],
+          });
+
+          if (!lotteryCount) {
+            setCreateLotteryError("Failed to retrieve created lottery");
+            return;
+          }
+
+          const lotteryAddress = await publicClient.readContract({
+            address: contract.address,
+            abi: contract.abi,
+            functionName: "lotteries",
+            args: [account.address, lotteryCount - 1n],
+          });
+
+          if (!lotteryAddress) {
+            setCreateLotteryError("Failed to retrieve created lottery");
+            return;
+          }
+
+          console.log("lotteryAddress", lotteryAddress, "chain", targetNetwork.id);
+          router.push(`/lotteries/${targetNetwork.id}/${lotteryAddress}`);
         },
       },
     );
-  }, [contract, writeContract, setLoading, setCreateLotteryTxHash, setCreateLotteryError]);
+  }, [
+    account,
+    contract,
+    publicClient,
+    router,
+    setLoading,
+    setCreateLotteryTxHash,
+    setCreateLotteryError,
+    targetNetwork,
+    writeContract,
+  ]);
 
   const nextClassName = page == 0 ? "w-36 md:w-64" : "";
   const prevClassName = page == 0 ? "" : "md:w-36 w-32";
