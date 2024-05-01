@@ -11,8 +11,9 @@ export const useLotteries = (address: string) => {
 
   useEffect(() => {
     const fetchLotteries = async () => {
-      const provider = new ethers.providers.JsonRpcProvider('https://base-sepolia.g.alchemy.com/v2/demo');
-      const contract = new ethers.Contract('0xContractAddress', ['function lotteryCount(address) view returns (uint)', 'function lotteries(address, uint) view returns (address)'], provider);
+      const provider = new ethers.providers.JsonRpcProvider('https://base-sepolia.g.alchemy.com/v2/${alchemyApiKey}');
+      // const provider = new ethers.providers.JsonRpcProvider('https://base-sepolia.g.alchemy.com/v2/');
+      const contract = new ethers.Contract('0x8c653c4280839DEBA35844D561532e0EebC48024', ['function lotteryCount(address) view returns (uint)', 'function lotteries(address, uint) view returns (address)'], provider);
       setLoading(true);
       const count = await contract.lotteryCount(address);
       const fetchedLotteries: Lottery[] = [];
