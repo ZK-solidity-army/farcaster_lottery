@@ -9,6 +9,9 @@
 
 body {
   min-height: 100vh;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
 }
 
 h1,

@@ -10,6 +10,7 @@ import Transaction from "~~/src/components/Transaction";
 import { useTargetNetwork } from "~~/src/hooks/scaffold-eth/useTargetNetwork";
 import { getContract } from "~~/src/utils/getContract";
 
+const lottery_img_path = "/img/NewLottery.png";
 type CreateLotteryState = {
   title: string;
   hoursToClose: string;
@@ -99,7 +100,7 @@ export default function CreateLottery() {
         )}
       </div>
       <div className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] relative ">
-        <Image src="/img/pic2.png" alt="pic1" className="object-contain rounded rounded-3xl" fill={true} />
+        <Image src={lottery_img_path} alt="Lottery Image" className="object-contain rounded rounded-3xl" fill={true} />
       </div>
     </div>
   );
