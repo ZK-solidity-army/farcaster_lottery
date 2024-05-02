@@ -7,3 +7,6 @@ export const SUPPORTED_CHAINS = Object.keys(deployedContracts);
 
 export const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 export const RPC_URL = process.env.RPC_URL;
+
+export const LIGHT_THEME = "bumblebee";
+export const DARK_THEME = "sunset";

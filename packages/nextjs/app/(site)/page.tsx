@@ -11,8 +11,6 @@ export default function HomePage() {
   // when user has connected wallet we would like to show blank page
   // until we get the account data
   const [isLoading, setLoading] = useState(true);
-  const [startWizard, setStartWizard] = useState(false);
-  const [showButton, setShowButton] = useState(false);
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -31,30 +29,7 @@ export default function HomePage() {
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
-        {startWizard ? (
-          <CreateLottery />
-        ) : (
-          <div className="md:w-4/6 mx-auto flex flex-1 flex-col justify-around">
-            <div className="text-6xl">
-              <TypeAnimation
-                sequence={[
-                  "Welcome to my",
-                  300,
-                  "Welcome to your",
-                  300,
-                  "Welcome to Farcaster Lottery! Whould you like to create a new one?",
-                  () => setShowButton(true),
-                ]}
-                speed={50}
-              />
-            </div>
-            {showButton && (
-              <button className="btn btn-lg btn-primary md:w-[26rem] md:h-[5rem]" onClick={() => setStartWizard(true)}>
-                Create a Lottery
-              </button>
-            )}
-          </div>
-        )}
+        <CreateLottery />
       </div>
     </>
   );
@@ -65,7 +40,10 @@ function DisconnectedHomePage() {
     <div className="text-center flex flex-col flex-1 justify-center">
       <div className="mb-5 -mt-10">
         <div className="text-2xl">Welcome to</div>
-        <h1 className="text-8xl leading-relaxed">Farcaster Lottery</h1>
+        <h1 className="text-8xl leading-relaxed">
+          &nbsp;
+          <TypeAnimation cursor={false} sequence={["My", 400, "Your", 400, "Farcaster Lottery"]} speed={50} />
+        </h1>
         <p>Here you may find create a new lottery or join an existing one.</p>
       </div>
       <ConnectButton.Custom>
