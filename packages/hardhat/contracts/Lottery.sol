@@ -48,11 +48,7 @@ contract Lottery is AccessControl {
             betsClosingTime = block.timestamp + duration;
         }
 
-        if (_starterFee == 0) {
-            starterFee = 500000000000000;
-        } else {
-            starterFee = _starterFee;
-        }
+        starterFee = _starterFee;
 
         totalPrice = TICKET_PRICE + DEV_FEE + starterFee;
 
