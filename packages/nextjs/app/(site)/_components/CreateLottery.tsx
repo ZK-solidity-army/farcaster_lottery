@@ -1,11 +1,13 @@
 import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useTheme } from "next-themes";
 import { twMerge } from "tailwind-merge";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import { WriteContractErrorType } from "wagmi/actions";
 import create from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import { DARK_THEME } from "~~/config";
 import Transaction from "~~/src/components/Transaction";
 import { useTargetNetwork } from "~~/src/hooks/scaffold-eth/useTargetNetwork";
 import { getContract } from "~~/src/utils/getContract";
@@ -36,6 +38,7 @@ export default function CreateLottery() {
   const [page, setPage] = useState(-1);
   const [createLotteryTxHash, setCreateLotteryTxHash] = useState("");
   const [createLotteryError, setCreateLotteryError] = useState("");
+  const [lotteryLink, setLotteryLink] = useState("");
   const [isLoading, setLoading] = useState(false);
 
   const onRestart = useCallback(() => {
@@ -49,41 +52,63 @@ export default function CreateLottery() {
         <div className="grid grid-rows-5 mt-5 md:mt-0 relative min-h-[20rem]">
           <div className="absolute w-full h-full bg-neutral/10 rounded rounded-3xl left-0 top-0 -z-1" />
           {!createLotteryError ? (
-            <>
-              <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
-                {isLoading ? (
-                  <div className="mt-10 mx-auto">
-                    <Loader />
-                  </div>
-                ) : (
-                  <>
-                    <WelcomePage index={-1} page={page} className="w-full absolute" />
-                    <SetTitleForm index={0} page={page} className="w-full absolute" />
-                    <SetDateForm index={1} page={page} className="w-full translate-x-full absolute" />
-                    <SetCreatorFeeForm index={2} page={page} className="w-full translate-x-full absolute" />
-                    <SetDepositForm index={3} page={page} className="w-full translate-x-full absolute" />
-                    <ReportForm index={4} page={page} className="w-full translate-x-full absolute" />
-                  </>
-                )}
-                {createLotteryTxHash && (
-                  <div className="text-center">
-                    <Transaction txHash={createLotteryTxHash as `0x${string}`} />
-                  </div>
-                )}
-              </div>
+            !lotteryLink ? (
+              <>
+                <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
+                  {isLoading ? (
+                    <div className="mt-10 mx-auto">
+                      <Loader />
+                    </div>
+                  ) : (
+                    <>
+                      <WelcomePage index={-1} page={page} className="w-full absolute" />
+                      <SetTitleForm index={0} page={page} className="w-full absolute" />
+                      <SetDateForm index={1} page={page} className="w-full translate-x-full absolute" />
+                      <SetCreatorFeeForm index={2} page={page} className="w-full translate-x-full absolute" />
+                      <SetDepositForm index={3} page={page} className="w-full translate-x-full absolute" />
+                      <ReportForm index={4} page={page} className="w-full translate-x-full absolute" />
+                    </>
+                  )}
+                  {createLotteryTxHash && (
+                    <div className="text-center">
+                      <Transaction txHash={createLotteryTxHash as `0x${string}`} />
+                    </div>
+                  )}
+                </div>
 
-              <div className="text-center relative">
-                <Controls
-                  pages={5}
-                  page={page}
-                  isLoading={isLoading}
-                  setPage={setPage}
-                  setCreateLotteryError={setCreateLotteryError}
-                  setCreateLotteryTxHash={setCreateLotteryTxHash}
-                  setLoading={setLoading}
-                />
-              </div>
-            </>
+                <div className="text-center relative">
+                  <Controls
+                    pages={5}
+                    page={page}
+                    isLoading={isLoading}
+                    setPage={setPage}
+                    setLotteryLink={setLotteryLink}
+                    setCreateLotteryError={setCreateLotteryError}
+                    setCreateLotteryTxHash={setCreateLotteryTxHash}
+                    setLoading={setLoading}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
+                  <div className="text-2xl row-start-2 md:w-[16rem] w-[14rem] mx-auto text-center">
+                    You have successfully created a lottery!
+                  </div>
+                  {createLotteryTxHash && (
+                    <div className="text-center row-start-4">
+                      <Transaction txHash={createLotteryTxHash as `0x${string}`} />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-row justify-center gap-3">
+                  <Link className={"btn btn-primary md:btn-lg w-[16rem] md:w-[18rem] relative"} href={lotteryLink}>
+                    Go to lottery
+                  </Link>
+                </div>
+              </>
+            )
           ) : (
             <>
               <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
@@ -114,6 +139,7 @@ function Controls({
   isLoading,
   setPage,
   setLoading,
+  setLotteryLink,
   setCreateLotteryTxHash,
   setCreateLotteryError,
 }: {
@@ -122,6 +148,7 @@ function Controls({
   isLoading: boolean;
   setPage: (page: number) => void;
   setLoading: (loading: boolean) => void;
+  setLotteryLink: (link: string) => void;
   setCreateLotteryTxHash: (hash: string) => void;
   setCreateLotteryError: (error: string) => void;
 }) {
@@ -132,7 +159,6 @@ function Controls({
   });
   const contract = useMemo(() => getContract("LotteryDeployer", targetNetwork.id), [targetNetwork]);
   const account = useAccount();
-  const router = useRouter();
 
   const onNext = useCallback(() => page < pages - 1 && setPage(page + 1), [page, pages, setPage]);
   const onPrev = useCallback(() => page > 0 && setPage(page - 1), [page, setPage]);
@@ -183,6 +209,7 @@ function Controls({
 
           if (!lotteryCount) {
             setCreateLotteryError("Failed to retrieve created lottery");
+            setLoading(false);
             return;
           }
 
@@ -199,7 +226,7 @@ function Controls({
           }
 
           console.log("lotteryAddress", lotteryAddress, "chain", targetNetwork.id);
-          router.push(`/lotteries/${targetNetwork.id}/${lotteryAddress}`);
+          setLotteryLink(`/lotteries/${targetNetwork.id}/${lotteryAddress}`);
         },
       },
     );
@@ -207,8 +234,8 @@ function Controls({
     account,
     contract,
     publicClient,
-    router,
     setLoading,
+    setLotteryLink,
     setCreateLotteryTxHash,
     setCreateLotteryError,
     targetNetwork,
@@ -473,10 +500,17 @@ const generateTransitionClass = (index: number, page: number) => {
 };
 
 function Loader() {
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === DARK_THEME;
+
+  const circle1Class = isDarkMode ? "#ff865b" : "#ffa400";
+  const circle2Class = isDarkMode ? "#9fb9d0" : "#342308";
+  const circle3Class = isDarkMode ? "#ff865b" : "#ffa400";
+
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200" className="w-[9rem] md:w-auto">
       <g>
-        <circle r="20" fill="#ffa400" cy="50" cx="30">
+        <circle r="20" fill={circle1Class} cy="50" cx="30">
           <animate
             begin="-0.5s"
             values="30;70;30"
@@ -486,7 +520,7 @@ function Loader() {
             attributeName="cx"
           ></animate>
         </circle>
-        <circle r="20" fill="#342308" cy="50" cx="70">
+        <circle r="20" fill={circle2Class} cy="50" cx="70">
           <animate
             begin="0s"
             values="30;70;30"
@@ -496,7 +530,7 @@ function Loader() {
             attributeName="cx"
           ></animate>
         </circle>
-        <circle r="20" fill="#ffa400" cy="50" cx="30">
+        <circle r="20" fill={circle3Class} cy="50" cx="30">
           <animate
             begin="-0.5s"
             values="30;70;30"

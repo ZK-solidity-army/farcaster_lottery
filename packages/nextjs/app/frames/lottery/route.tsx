@@ -1,16 +1,44 @@
 import { Button } from "frames.js/next";
+import { createPublicClient, formatEther, http } from "viem";
 import { frames } from "~~/app/frames/frames";
-import { BASE_URL } from "~~/config";
+import { BASE_URL, RPC_URL } from "~~/config";
+import { getContract } from "~~/src/utils/getContract";
+import { getTargetNetworks } from "~~/src/utils/scaffold-eth";
 
-const handler = frames(async ({ searchParams: { chainId, address }, url: { href } }) => {
+const handler = frames(async ({ searchParams: { chainId, address } }) => {
   const url = BASE_URL + "/img/pic2.png";
+
+  const targetNetworks = getTargetNetworks();
+  const targetNetwork = targetNetworks.find(network => network.id === parseInt(chainId, 10));
+  if (!targetNetwork) {
+    // TODO: make a fallback
+    console.log(chainId, targetNetworks);
+    throw new Error("Invalid chain id");
+  }
+  const client = createPublicClient({
+    chain: targetNetwork,
+    transport: http(RPC_URL),
+  });
+
+  const contract = getContract("Lottery", targetNetwork.id);
+
+  const [totalPrice, prizePool] = await Promise.all([
+    client.readContract({
+      address: address,
+      abi: contract.abi,
+      functionName: "totalPrice",
+    }),
+    client.readContract({
+      address: address,
+      abi: contract.abi,
+      functionName: "prizePool",
+    }),
+  ]);
+  console.log("totalPrice", totalPrice, "prizePool", prizePool);
 
   return {
     image: (
-      <div
-        tw="w-full h-full justify-center items-center flex flex-col bg-gradient-to-r from-teal-400 to-yellow-200"
-        style={{ background: "linear-gradient(to right, rgb(45, 212, 191), rgb(254, 240, 138))" }}
-      >
+      <div tw="w-full h-full justify-center items-center flex flex-col bg-gradient-to-r from-teal-400 to-yellow-200">
         <div>Participate in Lottery</div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -23,19 +51,22 @@ const handler = frames(async ({ searchParams: { chainId, address }, url: { href 
           width="256"
           height="256"
         />
-        <div tw="flex justify-between text-2xl">
-          <span>chainId:</span>
-          <span>{chainId}</span>
+        <div tw="flex justify-around text-2xl gap-2">
+          <span>Ticket price:</span>
+          <span>{formatEther(totalPrice)} ETH</span>
         </div>
-        <div tw="flex justify-around text-2xl">
-          <span>address:</span>
-          <span>{address}</span>
+        <div tw="flex justify-around text-2xl gap-2">
+          <span>Prize pool:</span>
+          <span>{formatEther(prizePool)} ETH</span>
         </div>
       </div>
     ),
     buttons: [
-      <Button key={0} action="post" target={href}>
+      <Button key={0} action="post" target={{ query: { chainId: chainId, address: address }, pathname: "/lottery" }}>
         Refresh
+      </Button>,
+      <Button key={0} action="link" target={`${BASE_URL}/lotteries/${chainId}/${address}`}>
+        Smart Contract
       </Button>,
       <Button
         key={1}
@@ -43,7 +74,7 @@ const handler = frames(async ({ searchParams: { chainId, address }, url: { href 
         target={{ query: { chainId: chainId, address: address }, pathname: "/lottery/bet/txdata" }}
         post_url={{ query: { chainId: chainId, address: address }, pathname: "/lottery/bet" }}
       >
-        Bet
+        Buy Ticket
       </Button>,
     ],
   };
