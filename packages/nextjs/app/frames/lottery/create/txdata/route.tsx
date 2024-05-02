@@ -3,7 +3,7 @@ import { encodeFunctionData } from "viem";
 import { CHAIN } from "~~/config";
 import { getContract } from "~~/src/utils/getContract";
 
-export const POST = () => {
+export const POST = (duration: number) => {
   const contract = getContract("LotteryDeployer", CHAIN.id);
 
   return NextResponse.json({
@@ -13,6 +13,7 @@ export const POST = () => {
       abi: contract.abi,
       to: contract.address,
       data: encodeFunctionData({ abi: contract.abi, functionName: "createLottery" }),
+      args: [duration],
     },
   });
 };

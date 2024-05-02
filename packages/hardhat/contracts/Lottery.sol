@@ -39,7 +39,8 @@ contract Lottery is AccessControl {
     address[] _slots;
 
     constructor(uint256 duration)  {
-        if (duration <= 0 || duration > 14 days) {
+        require(duration < 14 days, "Lottery cannot be open for longer than 14 days");
+        if (duration == 0) {
             betsClosingTime = block.timestamp + 14 days;
         } else {
             betsClosingTime = block.timestamp + duration;
