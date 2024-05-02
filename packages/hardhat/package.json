@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "account": "hardhat run scripts/listAccount.ts",
-    "run-hardhat": "hardhat run",
+    "list-lotteries": "hardhat run scripts/listLotteriesContractsOwnedByMe.ts --network baseSepolia",
     "chain": "hardhat node --network hardhat --no-deploy",
     "compile": "hardhat compile",
     "deploy": "hardhat deploy",

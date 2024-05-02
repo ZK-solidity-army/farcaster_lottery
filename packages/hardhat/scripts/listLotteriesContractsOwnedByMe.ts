@@ -1,12 +1,17 @@
 import { ethers } from "ethers";
-import  LotteryDeployer  from "../artifacts/contracts/LotteryDeployer.sol/LotteryDeployer.json";
+import LotteryDeployer from "../artifacts/contracts/LotteryDeployer.sol/LotteryDeployer.json";
 
 async function main() {
-  const alchemyApiKey = "";
-  const provider = new ethers.JsonRpcProvider(`https://base-sepolia.g.alchemy.com/v2/${alchemyApiKey}`);
-  const contractAddress = "0x8c653c4280839DEBA35844D561532e0EebC48024";
-  const myAddress = "0xDFd7dfc0B94a51d893b2a1cDeD86F8466325C9c5";
+  const alchemyApiKey = process.env.ALCHEMY_API_KEY;
+  const contractAddress = process.env.CONTRACT_ADDRESS;
+  const myAddress = process.env.MY_ADDRESS;
 
+  if (!alchemyApiKey || !contractAddress || !myAddress) {
+    console.error("Error: Missing required environment variables. Please provide ALCHEMY_API_KEY, CONTRACT_ADDRESS, and MY_ADDRESS.");
+    return;
+  }
+
+  const provider = new ethers.JsonRpcProvider(`https://base-sepolia.g.alchemy.com/v2/${alchemyApiKey}`);
   const contract = new ethers.Contract(contractAddress, LotteryDeployer.abi, provider);
 
   const lotteryCount = await contract.lotteryCount(myAddress);
