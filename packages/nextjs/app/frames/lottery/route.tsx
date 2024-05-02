@@ -12,6 +12,7 @@ const handler = frames(async ({ searchParams: { chainId, address }, url: { href 
         style={{ background: "linear-gradient(to right, rgb(45, 212, 191), rgb(254, 240, 138))" }}
       >
         <div>Participate in Lottery</div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={url}
           tw="my-4"
