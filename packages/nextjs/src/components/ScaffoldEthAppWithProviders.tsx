@@ -5,7 +5,9 @@ import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowki
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { Toaster } from "react-hot-toast";
+import { twMerge } from "tailwind-merge";
 import { WagmiProvider, useAccount } from "wagmi";
+import { DARK_THEME } from "~~/config";
 import { Footer } from "~~/src/components/Footer";
 import { Header } from "~~/src/components/Header";
 import { BlockieAvatar } from "~~/src/components/scaffold-eth";
@@ -14,7 +16,7 @@ import { useNativeCurrencyPrice } from "~~/src/hooks/scaffold-eth";
 import { useGlobalState } from "~~/src/services/store/store";
 import { wagmiConfig } from "~~/src/services/web3/wagmiConfig";
 
-const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
+const ScaffoldEthApp = ({ children, isDarkMode }: { children: React.ReactNode; isDarkMode: boolean }) => {
   const account = useAccount();
   const price = useNativeCurrencyPrice();
   const setNativeCurrencyPrice = useGlobalState(state => state.setNativeCurrencyPrice);
@@ -25,9 +27,17 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
     }
   }, [setNativeCurrencyPrice, price]);
 
+  console.log(isDarkMode);
+  /*
+  // TODO: doesn't work with tailwindcss JIT
+  const bgClassName = !isDarkMode
+    ? "bg-gradient-to-r from-teal-400 to-yellow-200"
+    : "bg-gradient-to-r from-slate-900 to-slate-700";
+    */
+
   return (
     <>
-      <div className="flex flex-col min-h-screen">
+      <div className={twMerge("flex flex-col min-h-screen")}>
         {account.isConnected && <Header />}
         <main className="relative flex flex-col flex-1">{children}</main>
         <Footer />
@@ -47,7 +57,7 @@ export const queryClient = new QueryClient({
 
 export const ScaffoldEthAppWithProviders = ({ children }: { children: React.ReactNode }) => {
   const { resolvedTheme } = useTheme();
-  const isDarkMode = resolvedTheme === "dark";
+  const isDarkMode = resolvedTheme === DARK_THEME;
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -62,7 +72,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
           avatar={BlockieAvatar}
           theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}
         >
-          <ScaffoldEthApp>{children}</ScaffoldEthApp>
+          <ScaffoldEthApp isDarkMode={isDarkMode}>{children}</ScaffoldEthApp>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

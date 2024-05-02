@@ -1,14 +1,12 @@
-import { CHAIN } from "~~/config";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-export const getContract = (contractName: string) => {
-  if (!(CHAIN.id in deployedContracts)) {
-    throw new Error(`Chain ${CHAIN.id} not supported`);
+export const getContract = (contractName: string, chainId: number) => {
+  if (!(chainId in deployedContracts)) {
+    throw new Error(`Chain ${chainId} not supported`);
   }
-  const chainId = CHAIN.id;
   const deployedContractsInChain = deployedContracts[chainId as keyof typeof deployedContracts];
   if (!(contractName in deployedContractsInChain)) {
-    throw new Error(`Contract ${contractName} not deployed on chain ${CHAIN.id}`);
+    throw new Error(`Contract ${contractName} not deployed on chain ${chainId}`);
   }
   return deployedContractsInChain[contractName as keyof typeof deployedContractsInChain];
 };

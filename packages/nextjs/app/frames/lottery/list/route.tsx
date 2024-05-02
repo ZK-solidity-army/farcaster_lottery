@@ -21,7 +21,7 @@ export const POST = frames(async ctx => {
     transport: http(RPC_URL),
   });
 
-  const contract = getContract("LotteryDeployer");
+  const contract = getContract("LotteryDeployer", CHAIN.id);
   const lotteryCount = await client.readContract({
     address: contract.address,
     abi: contract.abi,

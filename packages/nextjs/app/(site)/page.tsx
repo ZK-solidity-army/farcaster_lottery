@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import CreateLottery from "./_components/CreateLottery";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { TypeAnimation } from "react-type-animation";
 import { useAccount } from "wagmi";
 
 export default function HomePage() {
@@ -39,7 +40,10 @@ function DisconnectedHomePage() {
     <div className="text-center flex flex-col flex-1 justify-center">
       <div className="mb-5 -mt-10">
         <div className="text-2xl">Welcome to</div>
-        <h1 className="text-8xl leading-relaxed">Farcaster Lottery</h1>
+        <h1 className="text-8xl leading-relaxed">
+          &nbsp;
+          <TypeAnimation cursor={false} sequence={["My", 400, "Your", 400, "Farcaster Lottery"]} speed={50} />
+        </h1>
         <p>Here you may find create a new lottery or join an existing one.</p>
       </div>
       <ConnectButton.Custom>
