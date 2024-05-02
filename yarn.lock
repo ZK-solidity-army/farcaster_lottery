@@ -2489,6 +2489,7 @@ __metadata:
     react-copy-to-clipboard: ~5.1.0
     react-dom: ~18.2.0
     react-hot-toast: ~2.4.0
+    react-type-animation: ^3.2.0
     tailwind-merge: ^2.3.0
     tailwindcss: ~3.4.3
     type-fest: ~4.6.0
@@ -12946,6 +12947,17 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7ee8ef3aab74c7ae1d70ff34a27643d11ba1a8d62d072c767827d9ff9a520905223e567002e0bf6c772929d8ea1c781a3ba0cc4a563e92b1e3dc2eaa817ecbe8
+  languageName: node
+  linkType: hard
+
+"react-type-animation@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "react-type-animation@npm:3.2.0"
+  peerDependencies:
+    prop-types: ^15.5.4
+    react: ">= 15.0.0"
+    react-dom: ">= 15.0.0"
+  checksum: 4b7d92df71d8ed6cf53f182ce4ef9fb29636a86b14aa3852e5cbab11fd894e84bde12c6bb8e406258275ff2d0d875d0333dd67d91c9783d96bdefacb92c304cd
   languageName: node
   linkType: hard
 

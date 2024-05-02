@@ -23,9 +23,9 @@ type CreateLotteryState = {
 
 const useCreateLottery = create<CreateLotteryState>(set => ({
   title: "",
-  hoursToClose: "0",
-  creatorFee: "",
-  deposit: "",
+  hoursToClose: "24",
+  creatorFee: "0",
+  deposit: "0",
   setTitle: (title: string) => set({ title }),
   setCreatorFee: (creatorFee: string) => set({ creatorFee }),
   setHoursToClose: (hoursToClose: string) => set({ hoursToClose }),
@@ -44,8 +44,9 @@ export default function CreateLottery() {
   }, [setCreateLotteryError, setPage]);
 
   return (
-    <div className="lg:grid grid-cols-2 px-[5vw] py-[5vh] flex flex-col-reverse">
-      <div className="grid grid-rows-5 mt-5 md:mt-0">
+    <div className="lg:grid lg:grid-cols-2 px-[5vw] py-[5vh] flex flex-col-reverse gap-6">
+      <div className="grid grid-rows-5 mt-5 md:mt-0 relative min-h-[20rem]">
+        <div className="absolute w-full h-full bg-neutral/10 rounded rounded-3xl left-0 top-0 -z-1" />
         {!createLotteryError ? (
           <>
             <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
@@ -69,7 +70,7 @@ export default function CreateLottery() {
               )}
             </div>
 
-            <div className="text-center">
+            <div className="text-center relative">
               <Controls
                 pages={5}
                 page={page}
@@ -85,11 +86,11 @@ export default function CreateLottery() {
           <>
             <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
               <h2 className="md:text-3xl row-start-2 w-64 text-center mx-auto">
-                You won&lsquo;t be able to create transaction
+                You were unable to create the transaction
               </h2>
               <div className="text-center row-start-4 text-red-500 w-64 text-center mx-auto">{createLotteryError}</div>
             </div>
-            <div className="text-center">
+            <div className="text-center relative">
               <button className={"btn btn-primary md:btn-lg w-36 md:w-64"} onClick={onRestart}>
                 Try again
               </button>
@@ -164,6 +165,7 @@ function Controls({
             setLoading(false);
             const errorMessage = "shortMessage" in error ? error.shortMessage : error.message;
             setCreateLotteryError(errorMessage);
+            return;
           }
 
           if (!account.address) return;
@@ -209,14 +211,14 @@ function Controls({
     writeContract,
   ]);
 
-  const nextClassName = page == 0 ? "w-36 md:w-64" : "";
+  const nextClassName = page == 0 ? "w-[16rem] md:w-[18rem]" : "";
   const prevClassName = page == 0 ? "" : "md:w-36 w-32";
 
   return (
-    <div className="flex flex-row justify-center">
+    <div className="flex flex-row justify-center gap-3">
       {page !== 0 && (
         <button
-          className={twMerge("btn btn-primary md:btn-lg mr-4", prevClassName)}
+          className={twMerge("btn btn-primary md:btn-lg  w-[8rem] md:w-[9rem]", prevClassName)}
           onClick={onPrev}
           disabled={isLoading}
         >
@@ -224,11 +226,15 @@ function Controls({
         </button>
       )}
       {page !== pages - 1 ? (
-        <button className={twMerge("btn btn-primary md:btn-lg", nextClassName)} onClick={onNext} disabled={isLoading}>
+        <button
+          className={twMerge("btn btn-primary md:btn-lg w-[8rem] md:w-[9rem]", nextClassName)}
+          onClick={onNext}
+          disabled={isLoading}
+        >
           Next &raquo;
         </button>
       ) : (
-        <button className={"btn btn-secondary md:btn-lg"} onClick={onSubmit} disabled={isLoading}>
+        <button className={"btn btn-secondary md:btn-lg w-[8rem] md:w-[9rem]"} onClick={onSubmit} disabled={isLoading}>
           Create &raquo;
         </button>
       )}
@@ -271,20 +277,30 @@ function SetDateForm({ index, page, className }: { index: number; page: number; 
   const showClassName = generateTransitionClass(index, page);
 
   return (
-    <div className={twMerge("h-full grid grid-rows-4 text-center transition duration-500", className, showClassName)}>
-      <h2 className="md:text-3xl w-64 row-start-1 mx-auto mt-10">
-        By what time does the lottery close
-        <br />
-        (in hours)?
+    <div
+      className={twMerge("h-full grid grid-rows-3 text-center transition duration-500 mt-5", className, showClassName)}
+    >
+      <h2 className="text-secondary-content w-[17rem] md:w-[24rem] row-start-1 mx-auto mt-10">
+        By what time does the lottery close (in hours)?
       </h2>
-      <div className="row-start-3">
-        <input
-          type="text"
-          value={hoursToClose}
-          className="input md:input-lg input-wide"
-          placeholder=""
-          onChange={e => setHoursToClose(e.target.value)}
-        />
+      <div className="row-start-2">
+        <label
+          className={twMerge(
+            "input input-bordered flex items-center justify-between mx-auto relative",
+            "outline outline-2 outline-offset-2 outline-secondary-content/10",
+            "h-[5rem] w-[5rem]",
+            "md:h-[8rem] md:w-[8rem]",
+          )}
+        >
+          <input
+            type="text"
+            value={hoursToClose}
+            className="grow text-center h-full w-full text-2xl md:text-5xl"
+            onChange={e => setHoursToClose(e.target.value)}
+            maxLength={4}
+          />
+          <kbd className="kbd kbd-xs md:kbd-sm bg-yellow-200 absolute bottom-1 right-1">H</kbd>
+        </label>
       </div>
     </div>
   );
@@ -300,16 +316,28 @@ function SetCreatorFeeForm({ index, page, className }: { index: number; page: nu
   const showClassName = generateTransitionClass(index, page);
 
   return (
-    <div className={twMerge("h-full grid grid-rows-4 text-center transition duration-500", className, showClassName)}>
-      <h2 className="md:text-3xl w-64 row-start-1 mx-auto mt-10">What would be your creator fee?</h2>
-      <div className="row-start-3">
-        <input
-          type="text"
-          value={creatorFee}
-          className="input md:input-lg input-wide"
-          placeholder="%"
-          onChange={e => setCreatorFee(e.target.value)}
-        />
+    <div
+      className={twMerge("h-full grid grid-rows-3 text-center transition duration-500 mt-5", className, showClassName)}
+    >
+      <h2 className="text-secondary-content w-[20rem] row-start-1 mx-auto mt-10">What would be your creator fee?</h2>
+      <div className="row-start-2">
+        <label
+          className={twMerge(
+            "input input-bordered flex items-center justify-between mx-auto relative",
+            "outline outline-2 outline-offset-2 outline-secondary-content/10",
+            "h-[5rem] w-[5rem]",
+            "md:h-[8rem] md:w-[8rem]",
+          )}
+        >
+          <input
+            type="text"
+            value={creatorFee}
+            className="grow text-center h-full w-full text-2xl md:text-5xl"
+            onChange={e => setCreatorFee(e.target.value)}
+            maxLength={4}
+          />
+          <kbd className="kbd kbd-xs md:kbd-sm absolute bottom-1 right-1">%</kbd>
+        </label>
       </div>
     </div>
   );
@@ -325,18 +353,30 @@ function SetDepositForm({ index, page, className }: { index: number; page: numbe
   const showClassName = generateTransitionClass(index, page);
 
   return (
-    <div className={twMerge("h-full grid grid-rows-4 text-center transition duration-500", className, showClassName)}>
-      <h2 className="md:text-3xl w-64 row-start-1 mx-auto mt-10">
-        Whould you like to increase prize pool with some money?
+    <div
+      className={twMerge("h-full grid grid-rows-4 text-center transition duration-500 mt-5", className, showClassName)}
+    >
+      <h2 className="text-secondary-content w-[15rem] row-start-1 mx-auto mt-10">
+        Whould you like to increase prize pool with some starting money?
       </h2>
       <div className="row-start-3">
-        <input
-          type="text"
-          value={deposit}
-          className="input md:input-lg input-wide"
-          placeholder=""
-          onChange={e => setDeposit(e.target.value)}
-        />
+        <label
+          className={twMerge(
+            "input input-bordered flex items-center justify-between mx-auto relative",
+            "outline outline-2 outline-offset-2 outline-secondary-content/10",
+            "h-[3rem] w-[12rem]",
+            "md:h-[4rem] md:w-[14rem]",
+          )}
+        >
+          <input
+            type="text"
+            value={deposit}
+            className="grow w-full h-full pr-10"
+            placeholder=""
+            onChange={e => setDeposit(e.target.value)}
+          />
+          <kbd className="kbd kbd-xs md:kbd-sm absolute top-1/2 -translate-y-1/2 right-2">ETH</kbd>
+        </label>
       </div>
     </div>
   );
@@ -354,25 +394,29 @@ function ReportForm({ index, page, className }: { index: number; page: number; c
   const showClassName = generateTransitionClass(index, page);
 
   return (
-    <div className={twMerge("h-full grid grid-rows-4 text-center transition duration-500", className, showClassName)}>
-      <ul className="w-64 mx-auto md:text-lg md:mt-10">
-        <li className="flex justify-between">
-          <span>Title:</span>
-          <span>{title}</span>
-        </li>
-        <li className="flex justify-between">
-          <span>Close in:</span>
-          <span>{hoursToClose || 0} hours</span>
-        </li>
-        <li className="flex justify-between">
-          <span>Your fee</span>
-          <span>{creatorFee || 0}%</span>
-        </li>
-        <li className="flex justify-between">
-          <span>Starting prize pool:</span>
-          <span>{deposit || 0}</span>
-        </li>
-      </ul>
+    <div className={twMerge("h-full h-full text-center transition duration-500 p-5", className, showClassName)}>
+      <div className="overflow-x-auto md:m-10">
+        <table className="table">
+          <tbody>
+            <tr>
+              <td>Title</td>
+              <td>{title || ""}</td>
+            </tr>
+            <tr>
+              <td>Close in</td>
+              <td>{hoursToClose || 0} hours</td>
+            </tr>
+            <tr>
+              <td>Your fee</td>
+              <td>{creatorFee || 0} %</td>
+            </tr>
+            <tr>
+              <td>Starting prize pool</td>
+              <td>{deposit || 0} ETH</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -390,7 +434,7 @@ const generateTransitionClass = (index: number, page: number) => {
 
 function Loader() {
   return (
-    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200" className="w-[9rem] md:w-auto">
       <g>
         <circle r="20" fill="#ffa400" cy="50" cx="30">
           <animate
