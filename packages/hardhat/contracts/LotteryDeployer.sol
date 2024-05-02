@@ -17,8 +17,8 @@ contract LotteryDeployer is Ownable {
 
   /// @notice Creates a new Lottery contract
   /// @dev Deploys a new Lottery contract and stores the address in the lotteries mapping
-  function createLottery(uint256 duration) external {
-    Lottery lottery = new Lottery(duration);
+  function createLottery(uint256 duration, string memory lotteryName, uint256 starterFee) external {
+    Lottery lottery = new Lottery(duration, lotteryName, starterFee);
     uint256 index = lotteryCount[msg.sender];
     lotteries[msg.sender][index] = address(lottery);
     lotteryCount[msg.sender]++;

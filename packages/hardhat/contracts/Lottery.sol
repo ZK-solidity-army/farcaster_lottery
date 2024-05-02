@@ -35,10 +35,12 @@ contract Lottery is AccessControl {
     /// @notice Timestamp of the lottery closing time
     uint256 public betsClosingTime;
 
-    /// @dev List of bet slots
-    address[] _slots;
+    string lotteryName;
 
-    constructor(uint256 duration)  {
+    /// @dev List of bet slots
+    address[] public _slots;
+
+    constructor(uint256 duration, string memory _lotteryName, uint256 _starterFee)  {
         require(duration < 14 days, "Lottery cannot be open for longer than 14 days");
         if (duration == 0) {
             betsClosingTime = block.timestamp + 14 days;
@@ -46,11 +48,19 @@ contract Lottery is AccessControl {
             betsClosingTime = block.timestamp + duration;
         }
 
-        //TODO: make sure if the msg.sender is indeed the starter and not the proxy contract
+        if (_starterFee == 0) {
+            starterFee = 500000000000000;
+        } else {
+            starterFee = _starterFee;
+        }
+
+        totalPrice = TICKET_PRICE + DEV_FEE + starterFee;
+
+        lotteryName = _lotteryName;
+
         _grantRole(STARTER_ROLE, msg.sender);
 
-        //TODO: replace Vitalik's wallet with a more appropriate address.
-        _grantRole(DEVELOPER_ROLE, address(0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045));
+        _grantRole(DEVELOPER_ROLE, address(0xD0C1c389A5879da74B035614835A0D98c4c0DD5c));
     }
 
     /// @notice checks if the lottery is at open state and the current block timestamp is lower than the lottery closing date
@@ -76,9 +86,9 @@ contract Lottery is AccessControl {
     );
 
     function bet() public payable whenBetsOpen {
-        require(msg.value == TICKET_PRICE + STATER_FEE + DEV_FEE, "Invalid bet amount");
+        require(msg.value == totalPrice, "Invalid bet amount");
         developerPool += DEV_FEE;
-        starterPool += STATER_FEE;
+        starterPool += starterFee;
         prizePool += TICKET_PRICE;
         _slots.push(msg.sender);
     }
