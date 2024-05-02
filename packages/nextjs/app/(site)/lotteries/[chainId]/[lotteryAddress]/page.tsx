@@ -3,7 +3,7 @@
 import { ReactNode, useCallback, useState } from "react";
 import Link from "next/link";
 import { useReadContracts } from "wagmi";
-import { BASE_URL } from "~~/config";
+import { NEXT_PUBLIC_BASE_URL } from "~~/config";
 import { getContract } from "~~/src/utils/getContract";
 import { getBlockExplorerAddressLink, getTargetNetworks } from "~~/src/utils/scaffold-eth";
 
@@ -50,7 +50,7 @@ export default function LotteryPage({
       <h1 className="text-lg">Lottery</h1>
       <div>Owner: {owner}</div>
       <div>Prize pool: {prizePool && prizePool.toString()}</div>
-      <CopyBlock textToCopy={`${BASE_URL}/frames/lottery?chainId=${chainId}&address=${lotteryAddress}`}>
+      <CopyBlock textToCopy={`${NEXT_PUBLIC_BASE_URL}/frames/lottery?chainId=${chainId}&address=${lotteryAddress}`}>
         <Link
           target="_blank"
           href={getBlockExplorerAddressLink(targetNetwork, lotteryAddress)}
