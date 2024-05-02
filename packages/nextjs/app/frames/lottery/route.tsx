@@ -15,6 +15,7 @@ const handler = frames(async ({ searchParams: { chainId, address }, url: { href 
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={url}
+          alt="lottery"
           tw="my-4"
           style={{
             borderRadius: 128,
