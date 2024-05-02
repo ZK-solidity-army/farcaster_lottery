@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest) => {
       abi: contract.abi,
       to: address,
       data: encodeFunctionData({ abi: contract.abi, functionName: "bet" }),
-      value: totalPrice,
+      value: totalPrice.toString(),
     },
   });
 };
