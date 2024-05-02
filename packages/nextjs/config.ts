@@ -11,4 +11,4 @@ export const RPC_URL = process.env.RPC_URL;
 export const LIGHT_THEME = "bumblebee";
 export const DARK_THEME = "sunset";
 
-export const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+export const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://farcaster-lottery.xyz";
