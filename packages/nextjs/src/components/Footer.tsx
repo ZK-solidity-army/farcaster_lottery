@@ -17,7 +17,7 @@ export const Footer = () => {
       </div>
       <div className="w-full">
         <ul className="menu menu-horizontal w-full">
-          <div className="flex justify-center items-center gap-2 text-sm w-full">
+          <div className="flex justify-center items-center gap-2 text-sm w-full md:flex-row flex-col">
             <div className="text-center">
               <a
                 href="https://github.com/ZK-solidity-army/farcaster_lottery"
@@ -26,6 +26,18 @@ export const Footer = () => {
                 className="link"
               >
                 Fork me
+              </a>
+            </div>
+            <span>·</span>
+            <div className="flex justify-center items-center gap-2">
+              <p className="m-0 text-center">Read our</p>
+              <a
+                className="flex justify-center items-center gap-1"
+                href="https://farcaster-lottery.gitbook.io/docs/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="link">Guide</span>
               </a>
             </div>
             <span>·</span>
