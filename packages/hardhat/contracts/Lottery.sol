@@ -18,7 +18,7 @@ contract Lottery is AccessControl {
     uint256 public constant STATER_FEE = 5 ** 15;
     uint256 public constant DEV_FEE = 1 ** 15;
 
-    uint256 public constant totalPice = TICKET_PRICE + STATER_FEE + DEV_FEE;
+    uint256 public constant totalPrice = TICKET_PRICE + STATER_FEE + DEV_FEE;
 
     /// @notice Amount available to withdraw to the lottery starter
     uint256 public starterPool;

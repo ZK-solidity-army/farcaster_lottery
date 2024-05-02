@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/src/utils/scaffold-eth/contract"
 const deployedContracts = {
   84532: {
     Lottery: {
-      address: "0xAC0a5928b4be93bFA6658B52C21Ca02A0De64770",
+      address: "0x9d432bEB59aBA0A3119f49ecD717889494687A32",
       abi: [
         {
           inputs: [
@@ -436,6 +436,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "totalPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "withdrawPrizePool",
           outputs: [],
           stateMutability: "nonpayable",
@@ -460,7 +473,7 @@ const deployedContracts = {
       },
     },
     LotteryDeployer: {
-      address: "0x9c4787637812D50D5a912F3064BFf84163947FFd",
+      address: "0x413d04d40e7c7DA6249c05b7cfEEf6D35e37Bff5",
       abi: [
         {
           inputs: [],
