@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import { WriteContractErrorType } from "wagmi/actions";
@@ -158,7 +157,6 @@ function Controls({
   });
   const contract = useMemo(() => getContract("LotteryDeployer", targetNetwork.id), [targetNetwork]);
   const account = useAccount();
-  const router = useRouter();
 
   const onNext = useCallback(() => page < pages - 1 && setPage(page + 1), [page, pages, setPage]);
   const onPrev = useCallback(() => page > 0 && setPage(page - 1), [page, setPage]);
@@ -234,7 +232,6 @@ function Controls({
     account,
     contract,
     publicClient,
-    router,
     setLoading,
     setLotteryLink,
     setCreateLotteryTxHash,
