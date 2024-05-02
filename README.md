@@ -35,7 +35,7 @@ ngrok http 3000
 yarn next:frames
 ```
 
-### Macos Quickstart
+### Quickstart for newbies
 ```bash
 # clone repo
 git clone https://github.com/ZK-solidity-army/farcaster_lottery.git
@@ -74,6 +74,10 @@ ngrok http 3000
 yarn next:frames
 
 ```
+### How to check list of lotteries by script ?
+- [ ] check your .env file for a new environment variables
+- [ ] run `yarn list-lotteries` script
+
 
 # Documentation
 
@@ -81,7 +85,8 @@ yarn next:frames
   - [Quickstart](#quickstart)
     - [Smartcontract](#smartcontract)
     - [NextJS frontend](#nextjs-frontend)
-    - [Macos Quickstart](#macos-quickstart)
+    - [Quickstart for newbies](#quickstart-for-newbies)
+    - [How to check list of lotteries by script ?](#how-to-check-list-of-lotteries-by-script-)
 - [Documentation](#documentation)
   - [How it works](#how-it-works)
   - [Code Structure](#code-structure)
