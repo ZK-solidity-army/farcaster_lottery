@@ -14,10 +14,11 @@ contract Lottery is AccessControl {
     bytes32 public constant DEVELOPER_ROLE = keccak256("DEVELOPER_ROLE");
 
     // defaults to 0.001 Eth
-    uint256 public constant TICKET_PRICE = 1000000000000000;
+    uint256 public constant TICKET_PRICE = 10 ** 16;
+    uint256 public constant STATER_FEE = 5 ** 15;
+    uint256 public constant DEV_FEE = 1 ** 15;
 
-    uint256 public constant STATER_FEE = 500000000000000;
-    uint256 public constant DEV_FEE = 100000000000000;
+    uint256 public constant totalPice = TICKET_PRICE + STATER_FEE + DEV_FEE;
 
     /// @notice Amount available to withdraw to the lottery starter
     uint256 public starterPool;
@@ -67,7 +68,7 @@ contract Lottery is AccessControl {
     );
 
     function bet() public payable whenBetsOpen {
-        require(msg.value == TICKET_PRICE + STATER_FEE + DEV_FEE);
+        require(msg.value == TICKET_PRICE + STATER_FEE + DEV_FEE, "Invalid bet amount");
         developerPool += DEV_FEE;
         starterPool += STATER_FEE;
         prizePool += TICKET_PRICE;
