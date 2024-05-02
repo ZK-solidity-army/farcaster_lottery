@@ -33,7 +33,7 @@ const useCreateLottery = create<CreateLotteryState>(set => ({
 }));
 
 export default function CreateLottery() {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(-1);
   const [createLotteryTxHash, setCreateLotteryTxHash] = useState("");
   const [createLotteryError, setCreateLotteryError] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -44,64 +44,67 @@ export default function CreateLottery() {
   }, [setCreateLotteryError, setPage]);
 
   return (
-    <div className="lg:grid lg:grid-cols-2 px-[5vw] py-[5vh] flex flex-col-reverse gap-6">
-      <div className="grid grid-rows-5 mt-5 md:mt-0 relative min-h-[20rem]">
-        <div className="absolute w-full h-full bg-neutral/10 rounded rounded-3xl left-0 top-0 -z-1" />
-        {!createLotteryError ? (
-          <>
-            <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
-              {isLoading ? (
-                <div className="mt-10 mx-auto">
-                  <Loader />
-                </div>
-              ) : (
-                <>
-                  <SetTitleForm index={0} page={page} className="w-full absolute" />
-                  <SetDateForm index={1} page={page} className="w-full translate-x-full absolute" />
-                  <SetCreatorFeeForm index={2} page={page} className="w-full translate-x-full absolute" />
-                  <SetDepositForm index={3} page={page} className="w-full translate-x-full absolute" />
-                  <ReportForm index={4} page={page} className="w-full translate-x-full absolute" />
-                </>
-              )}
-              {createLotteryTxHash && (
-                <div className="text-center">
-                  <Transaction txHash={createLotteryTxHash as `0x${string}`} />
-                </div>
-              )}
-            </div>
+    <>
+      <div className="lg:grid lg:grid-cols-2 px-[5vw] py-[5vh] flex flex-col-reverse gap-6">
+        <div className="grid grid-rows-5 mt-5 md:mt-0 relative min-h-[20rem]">
+          <div className="absolute w-full h-full bg-neutral/10 rounded rounded-3xl left-0 top-0 -z-1" />
+          {!createLotteryError ? (
+            <>
+              <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
+                {isLoading ? (
+                  <div className="mt-10 mx-auto">
+                    <Loader />
+                  </div>
+                ) : (
+                  <>
+                    <WelcomePage index={-1} page={page} className="w-full absolute" />
+                    <SetTitleForm index={0} page={page} className="w-full absolute" />
+                    <SetDateForm index={1} page={page} className="w-full translate-x-full absolute" />
+                    <SetCreatorFeeForm index={2} page={page} className="w-full translate-x-full absolute" />
+                    <SetDepositForm index={3} page={page} className="w-full translate-x-full absolute" />
+                    <ReportForm index={4} page={page} className="w-full translate-x-full absolute" />
+                  </>
+                )}
+                {createLotteryTxHash && (
+                  <div className="text-center">
+                    <Transaction txHash={createLotteryTxHash as `0x${string}`} />
+                  </div>
+                )}
+              </div>
 
-            <div className="text-center relative">
-              <Controls
-                pages={5}
-                page={page}
-                isLoading={isLoading}
-                setPage={setPage}
-                setCreateLotteryError={setCreateLotteryError}
-                setCreateLotteryTxHash={setCreateLotteryTxHash}
-                setLoading={setLoading}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
-              <h2 className="md:text-3xl row-start-2 w-64 text-center mx-auto">
-                You were unable to create the transaction
-              </h2>
-              <div className="text-center row-start-4 text-red-500 w-64 text-center mx-auto">{createLotteryError}</div>
-            </div>
-            <div className="text-center relative">
-              <button className={"btn btn-primary md:btn-lg w-36 md:w-64"} onClick={onRestart}>
-                Try again
-              </button>
-            </div>
-          </>
-        )}
+              <div className="text-center relative">
+                <Controls
+                  pages={5}
+                  page={page}
+                  isLoading={isLoading}
+                  setPage={setPage}
+                  setCreateLotteryError={setCreateLotteryError}
+                  setCreateLotteryTxHash={setCreateLotteryTxHash}
+                  setLoading={setLoading}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="row-span-4 grid grid-rows-sugrid relative overflow-hidden">
+                <h2 className="md:text-3xl row-start-2 w-64 text-center mx-auto">
+                  You were unable to create the transaction
+                </h2>
+                <div className="text-center row-start-4 text-error w-64 text-center mx-auto">{createLotteryError}</div>
+              </div>
+              <div className="text-center relative">
+                <button className={"btn btn-primary md:btn-lg w-36 md:w-64"} onClick={onRestart}>
+                  Try again
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] relative ">
+          <Image src="/img/pic2.png" alt="pic1" className="object-contain rounded rounded-3xl" fill={true} />
+        </div>
       </div>
-      <div className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] relative ">
-        <Image src="/img/pic2.png" alt="pic1" className="object-contain rounded rounded-3xl" fill={true} />
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -133,6 +136,7 @@ function Controls({
 
   const onNext = useCallback(() => page < pages - 1 && setPage(page + 1), [page, pages, setPage]);
   const onPrev = useCallback(() => page > 0 && setPage(page - 1), [page, setPage]);
+  const onStart = useCallback(() => setPage(0), [setPage]);
   const onSubmit = useCallback(() => {
     setLoading(true);
     if (!publicClient) {
@@ -214,6 +218,16 @@ function Controls({
   const nextClassName = page == 0 ? "w-[16rem] md:w-[18rem]" : "";
   const prevClassName = page == 0 ? "" : "md:w-36 w-32";
 
+  if (page === -1) {
+    return (
+      <div className="flex flex-row justify-center gap-3">
+        <button className={"btn btn-primary md:btn-lg w-[16rem] md:w-[18rem]"} onClick={onStart}>
+          Create lottery
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-row justify-center gap-3">
       {page !== 0 && (
@@ -238,6 +252,21 @@ function Controls({
           Create &raquo;
         </button>
       )}
+    </div>
+  );
+}
+
+function WelcomePage({ index, page, className }: { index: number; page: number; className?: string }) {
+  const showClassName = generateTransitionClass(index, page);
+
+  return (
+    <div
+      className={twMerge("h-full grid grid-rows-4 transition duration-500 flex text-center", className, showClassName)}
+    >
+      <div className="md:w-[20rem] w-[15rem] mx-auto flex flex-col h-full justify-center">
+        <h2 className="text-xl">Create Your Own Lottery!</h2>
+        <p>Invite your audience to participate and let the anticipation begin!</p>
+      </div>
     </div>
   );
 }
@@ -280,7 +309,7 @@ function SetDateForm({ index, page, className }: { index: number; page: number; 
     <div
       className={twMerge("h-full grid grid-rows-3 text-center transition duration-500 mt-5", className, showClassName)}
     >
-      <h2 className="text-secondary-content w-[17rem] md:w-[24rem] row-start-1 mx-auto mt-10">
+      <h2 className="w-[17rem] md:w-[24rem] row-start-1 mx-auto mt-10">
         By what time does the lottery close (in hours)?
       </h2>
       <div className="row-start-2">
@@ -299,7 +328,7 @@ function SetDateForm({ index, page, className }: { index: number; page: number; 
             onChange={e => setHoursToClose(e.target.value)}
             maxLength={4}
           />
-          <kbd className="kbd kbd-xs md:kbd-sm bg-yellow-200 absolute bottom-1 right-1">H</kbd>
+          <kbd className="kbd kbd-xs md:kbd-sm bg-primary/40 absolute bottom-1 right-1">H</kbd>
         </label>
       </div>
     </div>
@@ -319,7 +348,7 @@ function SetCreatorFeeForm({ index, page, className }: { index: number; page: nu
     <div
       className={twMerge("h-full grid grid-rows-3 text-center transition duration-500 mt-5", className, showClassName)}
     >
-      <h2 className="text-secondary-content w-[20rem] row-start-1 mx-auto mt-10">What would be your creator fee?</h2>
+      <h2 className="w-[20rem] row-start-1 mx-auto mt-10">What would be your creator fee?</h2>
       <div className="row-start-2">
         <label
           className={twMerge(
@@ -356,7 +385,7 @@ function SetDepositForm({ index, page, className }: { index: number; page: numbe
     <div
       className={twMerge("h-full grid grid-rows-4 text-center transition duration-500 mt-5", className, showClassName)}
     >
-      <h2 className="text-secondary-content w-[15rem] row-start-1 mx-auto mt-10">
+      <h2 className="w-[15rem] row-start-1 mx-auto mt-10">
         Whould you like to increase prize pool with some starting money?
       </h2>
       <div className="row-start-3">
