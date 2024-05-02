@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import Link from "next/link";
 import { useReadContracts } from "wagmi";
 import { BASE_URL } from "~~/config";
@@ -64,11 +64,20 @@ export default function LotteryPage({
 }
 
 function CopyBlock({ children, textToCopy }: { children: ReactNode; textToCopy: string }) {
-  console.log(textToCopy);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const onClick = useCallback(() => {
+    navigator.clipboard.writeText(textToCopy);
+    setIsCopied(true);
+  }, [setIsCopied, textToCopy]);
+
   return (
     <div>
       <div>{children}</div>
-      <button>Copy</button>
+      <button className="btn btn-primary mt-5" onClick={onClick}>
+        Copy
+        {isCopied && " ✓"}
+      </button>
     </div>
   );
 }
