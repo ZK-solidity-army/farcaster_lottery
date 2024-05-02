@@ -28,8 +28,8 @@ const ScaffoldEthApp = ({ children, isDarkMode }: { children: React.ReactNode; i
   }, [setNativeCurrencyPrice, price]);
 
   console.log(isDarkMode);
+  const bgClassName = "";
   /*
-  // TODO: doesn't work with tailwindcss JIT
   const bgClassName = !isDarkMode
     ? "bg-gradient-to-r from-teal-400 to-yellow-200"
     : "bg-gradient-to-r from-slate-900 to-slate-700";
@@ -37,7 +37,7 @@ const ScaffoldEthApp = ({ children, isDarkMode }: { children: React.ReactNode; i
 
   return (
     <>
-      <div className={twMerge("flex flex-col min-h-screen")}>
+      <div className={twMerge("flex flex-col min-h-screen", bgClassName)}>
         {account.isConnected && <Header />}
         <main className="relative flex flex-col flex-1">{children}</main>
         <Footer />
