@@ -61,6 +61,7 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
           sizes="100vw"
           style={{ objectFit: "cover", opacity: "0.2" }}
         />
+
         <ThemeProvider enableSystem>
           <ScaffoldEthAppWithProviders>{children}</ScaffoldEthAppWithProviders>
         </ThemeProvider>

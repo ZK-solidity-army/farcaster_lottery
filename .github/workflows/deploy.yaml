@@ -22,6 +22,7 @@ jobs:
       name: Deploy to dokku
       uses: dokku/github-action@v1.1.3
       with:
+          branch: main
           git_push_flags: '--force'
           git_remote_url: 'ssh://dokku@get2gether.ru/farcaster-lottery'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
