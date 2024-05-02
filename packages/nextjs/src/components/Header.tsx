@@ -3,6 +3,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { twMerge } from "tailwind-merge";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/src/components/scaffold-eth";
 import { useOutsideClick } from "~~/src/hooks/scaffold-eth";
@@ -27,14 +28,13 @@ export const HeaderMenuLinks = () => {
     <>
       {menuLinks.map(({ label, href, icon }) => {
         const isActive = pathname === href;
+        const className = isActive ? "shadow-md" : "";
         return (
           <li key={href}>
             <Link
               href={href}
               passHref
-              className={`${
-                isActive ? "bg-secondary shadow-md" : ""
-              } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
+              className={twMerge("hover:shadow-md py-1.5 px-3 text-sm gap-2 grid grid-flow-col", className)}
             >
               {icon}
               <span>{label}</span>

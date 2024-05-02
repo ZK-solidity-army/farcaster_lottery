@@ -1,11 +1,13 @@
 import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 import { twMerge } from "tailwind-merge";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import { WriteContractErrorType } from "wagmi/actions";
 import create from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import { DARK_THEME } from "~~/config";
 import Transaction from "~~/src/components/Transaction";
 import { useTargetNetwork } from "~~/src/hooks/scaffold-eth/useTargetNetwork";
 import { getContract } from "~~/src/utils/getContract";
@@ -498,10 +500,17 @@ const generateTransitionClass = (index: number, page: number) => {
 };
 
 function Loader() {
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === DARK_THEME;
+
+  const circle1Class = isDarkMode ? "#ff865b" : "#ffa400";
+  const circle2Class = isDarkMode ? "#9fb9d0" : "#342308";
+  const circle3Class = isDarkMode ? "#ff865b" : "#ffa400";
+
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200" className="w-[9rem] md:w-auto">
       <g>
-        <circle r="20" fill="#ffa400" cy="50" cx="30">
+        <circle r="20" fill={circle1Class} cy="50" cx="30">
           <animate
             begin="-0.5s"
             values="30;70;30"
@@ -511,7 +520,7 @@ function Loader() {
             attributeName="cx"
           ></animate>
         </circle>
-        <circle r="20" fill="#342308" cy="50" cx="70">
+        <circle r="20" fill={circle2Class} cy="50" cx="70">
           <animate
             begin="0s"
             values="30;70;30"
@@ -521,7 +530,7 @@ function Loader() {
             attributeName="cx"
           ></animate>
         </circle>
-        <circle r="20" fill="#ffa400" cy="50" cx="30">
+        <circle r="20" fill={circle3Class} cy="50" cx="30">
           <animate
             begin="-0.5s"
             values="30;70;30"
