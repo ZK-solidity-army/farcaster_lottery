@@ -26,7 +26,6 @@ export const POST = async (req: NextRequest) => {
     abi: contract.abi,
     functionName: "totalPrice",
   });
-  console.log(totalPrice);
 
   return NextResponse.json({
     chainId: `eip155:${chainId}`,
