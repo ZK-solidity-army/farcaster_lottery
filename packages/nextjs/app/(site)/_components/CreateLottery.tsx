@@ -236,6 +236,7 @@ function Controls({
     publicClient,
     router,
     setLoading,
+    setLotteryLink,
     setCreateLotteryTxHash,
     setCreateLotteryError,
     targetNetwork,
