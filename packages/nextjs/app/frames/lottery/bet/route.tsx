@@ -6,7 +6,7 @@ export const POST = frames(async ({ searchParams: { chainId, address } }) => {
     image: <div>You have entered the lottery</div>,
     buttons: [
       <Button key={0} action="post" target={{ query: { chainId: chainId, address: address }, pathname: "/lottery" }}>
-        Refresh
+        &laquo; Back
       </Button>,
     ],
   };

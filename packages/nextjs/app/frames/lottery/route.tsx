@@ -3,15 +3,16 @@ import { createPublicClient, formatEther, http } from "viem";
 import { frames } from "~~/app/frames/frames";
 import { BASE_URL, RPC_URL } from "~~/config";
 import { getContract } from "~~/src/utils/getContract";
-import { getBlockExplorerAddressLink, getTargetNetworks } from "~~/src/utils/scaffold-eth";
+import { getTargetNetworks } from "~~/src/utils/scaffold-eth";
 
-const handler = frames(async ({ searchParams: { chainId, address }, url: { href } }) => {
+const handler = frames(async ({ searchParams: { chainId, address } }) => {
   const url = BASE_URL + "/img/pic2.png";
 
   const targetNetworks = getTargetNetworks();
   const targetNetwork = targetNetworks.find(network => network.id === parseInt(chainId, 10));
   if (!targetNetwork) {
     // TODO: make a fallback
+    console.log(chainId, targetNetworks);
     throw new Error("Invalid chain id");
   }
   const client = createPublicClient({
@@ -23,16 +24,17 @@ const handler = frames(async ({ searchParams: { chainId, address }, url: { href 
 
   const [totalPrice, prizePool] = await Promise.all([
     client.readContract({
-      address: contract.address,
+      address: address,
       abi: contract.abi,
       functionName: "totalPrice",
     }),
     client.readContract({
-      address: contract.address,
+      address: address,
       abi: contract.abi,
       functionName: "prizePool",
     }),
   ]);
+  console.log("totalPrice", totalPrice, "prizePool", prizePool);
 
   return {
     image: (
@@ -60,10 +62,10 @@ const handler = frames(async ({ searchParams: { chainId, address }, url: { href 
       </div>
     ),
     buttons: [
-      <Button key={0} action="post" target={href}>
+      <Button key={0} action="post" target={{ query: { chainId: chainId, address: address }, pathname: "/lottery" }}>
         Refresh
       </Button>,
-      <Button key={0} action="link" target={getBlockExplorerAddressLink(targetNetwork, address)}>
+      <Button key={0} action="link" target={`${BASE_URL}/lotteries/${chainId}/${address}`}>
         Smart Contract
       </Button>,
       <Button
