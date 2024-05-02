@@ -281,16 +281,27 @@ function SetTitleForm({ index, page, className }: { index: number; page: number;
   const showClassName = generateTransitionClass(index, page);
 
   return (
-    <div className={twMerge("h-full grid grid-rows-4 text-center transition duration-500", className, showClassName)}>
-      <h2 className="md:text-3xl row-start-2">Enter lottery name</h2>
+    <div
+      className={twMerge("h-full grid grid-rows-4 text-center transition duration-500 mt-5", className, showClassName)}
+    >
+      <h2 className="w-[17rem] md:w-[24rem] row-start-1 mx-auto mt-10">How would you like to name your lottery?</h2>
       <div className="row-start-3">
-        <input
-          type="text"
-          value={title}
-          className="input md:input-lg input-wide"
-          placeholder=""
-          onChange={e => setTitle(e.target.value)}
-        />
+        <label
+          className={twMerge(
+            "input input-bordered flex mx-auto",
+            "outline outline-2 outline-offset-2 outline-secondary-content/10",
+            "h-[3rem] w-[16rem]",
+            "md:h-[4rem] md:w-[18rem]",
+          )}
+        >
+          <input
+            type="text"
+            value={title}
+            placeholder="Lottery name"
+            className="grow h-full w-full md:text-xl"
+            onChange={e => setTitle(e.target.value)}
+          />
+        </label>
       </div>
     </div>
   );
