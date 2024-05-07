@@ -6,7 +6,7 @@ import { getContract } from "~~/src/utils/getContract";
 import { getTargetNetworks } from "~~/src/utils/scaffold-eth";
 
 const handler = frames(async ({ searchParams: { chainId, address } }) => {
-  const url = BASE_URL + "/img/pic2.png";
+  const url = BASE_URL + "/img/welcome.jpg";
 
   const targetNetworks = getTargetNetworks();
   const targetNetwork = targetNetworks.find(network => network.id === parseInt(chainId, 10));

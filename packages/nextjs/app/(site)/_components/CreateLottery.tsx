@@ -126,7 +126,7 @@ export default function CreateLottery() {
           )}
         </div>
         <div className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] relative ">
-          <Image src="/img/pic2.png" alt="pic1" className="object-contain rounded rounded-3xl" fill={true} />
+          <Image src="/img/welcome.jpg" alt="pic1" className="object-contain rounded-3xl" fill={true} />
         </div>
       </div>
     </>
