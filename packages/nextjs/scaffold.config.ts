@@ -1,4 +1,24 @@
+import { defineChain } from "viem";
 import * as chains from "viem/chains";
+
+export const cantoTestnet = defineChain({
+  id: 7_701,
+  name: "Canto Testnet",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Canto",
+    symbol: "CANTO",
+  },
+  rpcUrls: {
+    default: { http: ["https://canto-testnet.plexnode.wtf"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "Tuber.Build (Blockscout)",
+      url: "https://testnet.tuber.build/",
+    },
+  },
+});
 
 export type ScaffoldConfig = {
   targetNetworks: readonly chains.Chain[];
@@ -10,7 +30,7 @@ export type ScaffoldConfig = {
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [chains.baseSepolia],
+  targetNetworks: [cantoTestnet, chains.canto],
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 4000)

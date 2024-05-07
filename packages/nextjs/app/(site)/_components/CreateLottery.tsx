@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { twMerge } from "tailwind-merge";
-import { useAccount, usePublicClient, useWriteContract } from "wagmi";
-import { WriteContractErrorType } from "wagmi/actions";
+import { parseUnits } from "viem";
+import { useAccount, useConfig, usePublicClient, useWriteContract } from "wagmi";
+import { WriteContractErrorType, waitForTransactionReceipt } from "wagmi/actions";
 import create from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { DARK_THEME } from "~~/config";
@@ -16,26 +17,33 @@ type CreateLotteryState = {
   title: string;
   ticketPrice: string;
   creatorFee: string;
+  creatorFeePercent: string;
   deposit: string;
   hoursToClose: string;
   setTitle: (title: string) => void;
+  setTicketPrice: (ticketPrice: string) => void;
   setHoursToClose: (hoursToClose: string) => void;
   setCreatorFee: (creatorFee: string) => void;
+  setCreatorFeePercent: (creatorFeePercent: string) => void;
   setDeposit: (deposit: string) => void;
 };
 
 const useCreateLottery = create<CreateLotteryState>(set => ({
   title: "",
-  ticketPrice: "0",
+  ticketPrice: "1",
   creatorFee: "0",
+  creatorFeePercent: "0",
   deposit: "0",
   hoursToClose: "24",
   setTitle: (title: string) => set({ title }),
   setTicketPrice: (ticketPrice: string) => set({ ticketPrice }),
   setCreatorFee: (creatorFee: string) => set({ creatorFee }),
+  setCreatorFeePercent: (creatorFeePercent: string) => set({ creatorFeePercent }),
   setHoursToClose: (hoursToClose: string) => set({ hoursToClose }),
   setDeposit: (deposit: string) => set({ deposit }),
 }));
+
+const MAX_FORM_PAGES = 6;
 
 export default function CreateLottery() {
   const [page, setPage] = useState(-1);
@@ -52,7 +60,7 @@ export default function CreateLottery() {
   return (
     <>
       <div className="lg:grid lg:grid-cols-2 px-[5vw] py-[5vh] flex flex-col-reverse gap-6">
-        <div className="grid grid-rows-5 mt-5 md:mt-0 relative min-h-[20rem]">
+        <div className="grid grid-rows-5 mt-5 md:mt-0 relative md:min-h-[31.25rem] min-h-[25rem]">
           <div className="absolute w-full h-full bg-neutral/10 rounded rounded-3xl left-0 top-0 -z-1" />
           {!createLotteryError ? (
             !lotteryLink ? (
@@ -66,10 +74,11 @@ export default function CreateLottery() {
                     <>
                       <WelcomePage index={-1} page={page} className="w-full absolute" />
                       <SetTitleForm index={0} page={page} className="w-full absolute" />
-                      <SetDateForm index={1} page={page} className="w-full translate-x-full absolute" />
+                      <SetTicketPriceForm index={1} page={page} className="w-full translate-x-full absolute" />
                       <SetCreatorFeeForm index={2} page={page} className="w-full translate-x-full absolute" />
                       <SetDepositForm index={3} page={page} className="w-full translate-x-full absolute" />
-                      <ReportForm index={4} page={page} className="w-full translate-x-full absolute" />
+                      <SetDateForm index={4} page={page} className="w-full translate-x-full absolute" />
+                      <ReportForm index={5} page={page} className="w-full translate-x-full absolute" />
                     </>
                   )}
                   {createLotteryTxHash && (
@@ -81,7 +90,7 @@ export default function CreateLottery() {
 
                 <div className="text-center relative">
                   <Controls
-                    pages={5}
+                    pages={MAX_FORM_PAGES}
                     page={page}
                     isLoading={isLoading}
                     setPage={setPage}
@@ -162,6 +171,7 @@ function Controls({
   });
   const contract = useMemo(() => getContract("LotteryDeployer", targetNetwork.id), [targetNetwork]);
   const account = useAccount();
+  const config = useConfig();
 
   const { title, ticketPrice, hoursToClose, creatorFee, deposit } = useCreateLottery(
     useShallow(state => ({
@@ -186,13 +196,25 @@ function Controls({
       setCreateLotteryError("Account is not connected");
       return;
     }
+    const decimals = targetNetwork.nativeCurrency.decimals;
+    const ticketPriceUnits = parseUnits(ticketPrice, decimals);
+    const creatorFeeUnits = parseUnits(creatorFee, decimals);
+    const depositUnits = parseUnits(deposit, decimals);
 
     writeContract(
       {
         address: contract.address,
         abi: contract.abi,
         functionName: "createLottery",
-        args: [title, BigInt(ticketPrice), BigInt(creatorFee), BigInt(deposit), BigInt(hoursToClose)],
+        args: [
+          title,
+          ticketPriceUnits,
+          creatorFeeUnits,
+          depositUnits,
+          BigInt(Math.ceil(parseFloat(hoursToClose) * 60 * 60)),
+        ],
+        // @ts-ignore
+        value: depositUnits,
       },
       {
         onSuccess: (hash: `0x${string}`) => {
@@ -209,6 +231,18 @@ function Controls({
             setLoading(false);
             const errorMessage = "shortMessage" in error ? error.shortMessage : error.message;
             setCreateLotteryError(errorMessage);
+            return;
+          }
+
+          try {
+            await waitForTransactionReceipt(config, {
+              chainId: targetNetwork.id,
+              hash: hash as `0x${string}`,
+            });
+          } catch (error) {
+            setLoading(false);
+            console.log("error", error);
+            setCreateLotteryError("Failed to retrieve created lottery");
             return;
           }
 
@@ -246,6 +280,7 @@ function Controls({
     );
   }, [
     account,
+    config,
     contract,
     publicClient,
     setLoading,
@@ -310,7 +345,7 @@ function WelcomePage({ index, page, className }: { index: number; page: number; 
     <div
       className={twMerge("h-full grid grid-rows-4 transition duration-500 flex text-center", className, showClassName)}
     >
-      <div className="md:w-[20rem] w-[15rem] mx-auto flex flex-col h-full justify-center">
+      <div className="md:w-[18.5rem] w-[15rem] mx-auto flex flex-col h-full justify-center">
         <h2 className="text-xl">Create Your Own Lottery!</h2>
         <p>Invite your audience to participate and let the anticipation begin!</p>
       </div>
@@ -393,20 +428,69 @@ function SetDateForm({ index, page, className }: { index: number; page: number; 
   );
 }
 
-function SetCreatorFeeForm({ index, page, className }: { index: number; page: number; className?: string }) {
-  const { creatorFee, setCreatorFee } = useCreateLottery(
+function SetTicketPriceForm({ index, page, className }: { index: number; page: number; className?: string }) {
+  const { ticketPrice, creatorFeePercent, setTicketPrice, setCreatorFee } = useCreateLottery(
     useShallow(state => ({
-      creatorFee: state.creatorFee,
+      ticketPrice: state.ticketPrice,
+      creatorFeePercent: state.creatorFeePercent,
+      setTicketPrice: state.setTicketPrice,
       setCreatorFee: state.setCreatorFee,
     })),
   );
+  const { targetNetwork } = useTargetNetwork();
+  const showClassName = generateTransitionClass(index, page);
+
+  return (
+    <div
+      className={twMerge("h-full grid grid-rows-4 text-center transition duration-500 mt-5", className, showClassName)}
+    >
+      <h2 className="w-[17rem] md:w-[24rem] row-start-1 mx-auto mt-10">What would be the ticket price?</h2>
+      <div className="row-start-3">
+        <label
+          className={twMerge(
+            "input input-bordered flex items-center justify-between mx-auto relative",
+            "outline outline-2 outline-offset-2 outline-secondary-content/10",
+            "h-[3rem] w-[12rem]",
+            "md:h-[4rem] md:w-[14rem]",
+          )}
+        >
+          <input
+            type="text"
+            value={ticketPrice}
+            className="grow w-full h-full pr-10"
+            placeholder=""
+            onChange={e => {
+              setTicketPrice(e.target.value);
+              setCreatorFee(getCreatorFee(e.target.value, creatorFeePercent));
+            }}
+          />
+          <kbd className="kbd kbd-xs md:kbd-sm absolute top-1/2 -translate-y-1/2 right-2">
+            {targetNetwork.nativeCurrency.symbol}
+          </kbd>
+        </label>
+      </div>
+    </div>
+  );
+}
+
+function SetCreatorFeeForm({ index, page, className }: { index: number; page: number; className?: string }) {
+  const { ticketPrice, creatorFee, creatorFeePercent, setCreatorFee, setCreatorFeePercent } = useCreateLottery(
+    useShallow(state => ({
+      ticketPrice: state.ticketPrice,
+      creatorFee: state.creatorFee,
+      creatorFeePercent: state.creatorFeePercent,
+      setCreatorFee: state.setCreatorFee,
+      setCreatorFeePercent: state.setCreatorFeePercent,
+    })),
+  );
+  const { targetNetwork } = useTargetNetwork();
   const showClassName = generateTransitionClass(index, page);
 
   return (
     <div
       className={twMerge("h-full grid grid-rows-3 text-center transition duration-500 mt-5", className, showClassName)}
     >
-      <h2 className="w-[20rem] row-start-1 mx-auto mt-10">What would be your creator fee?</h2>
+      <h2 className="w-[18.5rem] row-start-1 mx-auto mt-10">What would be your creator fee?</h2>
       <div className="row-start-2">
         <label
           className={twMerge(
@@ -418,13 +502,21 @@ function SetCreatorFeeForm({ index, page, className }: { index: number; page: nu
         >
           <input
             type="text"
-            value={creatorFee}
+            value={creatorFeePercent}
             className="grow text-center h-full w-full text-2xl md:text-5xl"
-            onChange={e => setCreatorFee(e.target.value)}
+            onChange={e => {
+              setCreatorFeePercent(e.target.value);
+              setCreatorFee(getCreatorFee(ticketPrice, e.target.value));
+            }}
             maxLength={4}
           />
           <kbd className="kbd kbd-xs md:kbd-sm absolute bottom-1 right-1">%</kbd>
         </label>
+        {creatorFee && creatorFee !== "0" ? (
+          <div className="text-sm mt-5">
+            You will earn {creatorFee} {targetNetwork.nativeCurrency.symbol} for each ticket
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -437,6 +529,7 @@ function SetDepositForm({ index, page, className }: { index: number; page: numbe
       setDeposit: state.setDeposit,
     })),
   );
+  const { targetNetwork } = useTargetNetwork();
   const showClassName = generateTransitionClass(index, page);
 
   return (
@@ -462,7 +555,9 @@ function SetDepositForm({ index, page, className }: { index: number; page: numbe
             placeholder=""
             onChange={e => setDeposit(e.target.value)}
           />
-          <kbd className="kbd kbd-xs md:kbd-sm absolute top-1/2 -translate-y-1/2 right-2">ETH</kbd>
+          <kbd className="kbd kbd-xs md:kbd-sm absolute top-1/2 -translate-y-1/2 right-2">
+            {targetNetwork.nativeCurrency.symbol}
+          </kbd>
         </label>
       </div>
     </div>
@@ -470,14 +565,17 @@ function SetDepositForm({ index, page, className }: { index: number; page: numbe
 }
 
 function ReportForm({ index, page, className }: { index: number; page: number; className?: string }) {
-  const { deposit, creatorFee, title, hoursToClose } = useCreateLottery(
+  const { title, ticketPrice, creatorFee, creatorFeePercent, deposit, hoursToClose } = useCreateLottery(
     useShallow(state => ({
-      deposit: state.deposit,
-      creatorFee: state.creatorFee,
       title: state.title,
+      ticketPrice: state.ticketPrice,
+      creatorFee: state.creatorFee,
+      creatorFeePercent: state.creatorFeePercent,
+      deposit: state.deposit,
       hoursToClose: state.hoursToClose,
     })),
   );
+  const { targetNetwork } = useTargetNetwork();
   const showClassName = generateTransitionClass(index, page);
 
   return (
@@ -487,19 +585,35 @@ function ReportForm({ index, page, className }: { index: number; page: number; c
           <tbody>
             <tr>
               <td>Title</td>
-              <td>{title || ""}</td>
+              <td className="text-right">{title || ""}</td>
             </tr>
             <tr>
-              <td>Close in</td>
-              <td>{hoursToClose || 0} hours</td>
+              <td>Ticket price</td>
+              <td className="text-right">
+                {ticketPrice || 0} {targetNetwork.nativeCurrency.symbol}
+              </td>
             </tr>
             <tr>
               <td>Your fee</td>
-              <td>{creatorFee || 0} %</td>
+              <td className="text-right">
+                {creatorFeePercent || 0} %
+                {parseFloat(creatorFee) ? (
+                  <span className="text-sm">
+                    {" "}
+                    ({creatorFee} {targetNetwork.nativeCurrency.symbol})
+                  </span>
+                ) : null}
+              </td>
             </tr>
             <tr>
               <td>Starting prize pool</td>
-              <td>{deposit || 0} ETH</td>
+              <td className="text-right">
+                {deposit || 0} {targetNetwork.nativeCurrency.symbol}
+              </td>
+            </tr>
+            <tr>
+              <td>Close in</td>
+              <td className="text-right">{hoursToClose || 0} hours</td>
             </tr>
           </tbody>
         </table>
@@ -517,6 +631,13 @@ const generateTransitionClass = (index: number, page: number) => {
     className += " translate-x-full";
   }
   return className;
+};
+
+const getCreatorFee = (ticketPrice: string, creatorFeePercent: string) => {
+  if (!ticketPrice || !creatorFeePercent) return "0";
+  const creatorFee = parseFloat(ticketPrice) * (parseFloat(creatorFeePercent) / 100);
+  if (isNaN(creatorFee)) return "0";
+  return String(creatorFee);
 };
 
 function Loader() {
