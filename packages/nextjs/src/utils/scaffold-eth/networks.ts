@@ -1,5 +1,9 @@
 import * as chains from "viem/chains";
-import scaffoldConfig from "~~/scaffold.config";
+import scaffoldConfig, { cantoTestnet } from "~~/scaffold.config";
+
+// TODO: create separated chains file
+// @ts-ignore
+chains["cantoTestnet"] = cantoTestnet;
 
 type ChainAttributes = {
   // color | [lightThemeColor, darkThemeColor]
