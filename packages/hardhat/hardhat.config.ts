@@ -118,6 +118,14 @@ const config: HardhatUserConfig = {
       url: "https://sepolia.publicgoods.network",
       accounts: [deployerPrivateKey],
     },
+    canto: {
+      url: "https://canto.slingshot.finance/",
+      accounts: [deployerPrivateKey],
+    },
+    cantoTestnet: {
+      url: "https://canto-testnet.plexnode.wtf",
+      accounts: [deployerPrivateKey],
+    },
   },
   // configuration for harhdat-verify plugin
   etherscan: {

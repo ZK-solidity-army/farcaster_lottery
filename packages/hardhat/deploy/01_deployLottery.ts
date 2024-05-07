@@ -11,7 +11,7 @@ const deployLottery: DeployFunction = async function (hre: HardhatRuntimeEnviron
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
-    args: [1],
+    args: ["My Lottery", 10n ** 17n, 10n ** 16n, 0, 4 * 60 * 60],
   });
 };
 
