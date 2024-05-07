@@ -14,9 +14,10 @@ import { getContract } from "~~/src/utils/getContract";
 
 type CreateLotteryState = {
   title: string;
-  hoursToClose: string;
+  ticketPrice: string;
   creatorFee: string;
   deposit: string;
+  hoursToClose: string;
   setTitle: (title: string) => void;
   setHoursToClose: (hoursToClose: string) => void;
   setCreatorFee: (creatorFee: string) => void;
@@ -25,10 +26,12 @@ type CreateLotteryState = {
 
 const useCreateLottery = create<CreateLotteryState>(set => ({
   title: "",
-  hoursToClose: "24",
+  ticketPrice: "0",
   creatorFee: "0",
   deposit: "0",
+  hoursToClose: "24",
   setTitle: (title: string) => set({ title }),
+  setTicketPrice: (ticketPrice: string) => set({ ticketPrice }),
   setCreatorFee: (creatorFee: string) => set({ creatorFee }),
   setHoursToClose: (hoursToClose: string) => set({ hoursToClose }),
   setDeposit: (deposit: string) => set({ deposit }),
@@ -160,6 +163,16 @@ function Controls({
   const contract = useMemo(() => getContract("LotteryDeployer", targetNetwork.id), [targetNetwork]);
   const account = useAccount();
 
+  const { title, ticketPrice, hoursToClose, creatorFee, deposit } = useCreateLottery(
+    useShallow(state => ({
+      title: state.title,
+      ticketPrice: state.ticketPrice,
+      hoursToClose: state.hoursToClose,
+      creatorFee: state.creatorFee,
+      deposit: state.deposit,
+    })),
+  );
+
   const onNext = useCallback(() => page < pages - 1 && setPage(page + 1), [page, pages, setPage]);
   const onPrev = useCallback(() => page > 0 && setPage(page - 1), [page, setPage]);
   const onStart = useCallback(() => setPage(0), [setPage]);
@@ -179,6 +192,7 @@ function Controls({
         address: contract.address,
         abi: contract.abi,
         functionName: "createLottery",
+        args: [title, BigInt(ticketPrice), BigInt(creatorFee), BigInt(deposit), BigInt(hoursToClose)],
       },
       {
         onSuccess: (hash: `0x${string}`) => {
@@ -240,6 +254,12 @@ function Controls({
     setCreateLotteryError,
     targetNetwork,
     writeContract,
+    // Lottery args
+    title,
+    ticketPrice,
+    hoursToClose,
+    creatorFee,
+    deposit,
   ]);
 
   const nextClassName = page == 0 ? "w-[16rem] md:w-[18rem]" : "";
