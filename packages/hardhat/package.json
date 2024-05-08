@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "account": "hardhat run scripts/listAccount.ts",
+    "list-lotteries": "hardhat run scripts/listLotteriesContractsOwnedByMe.ts --network baseSepolia",
     "chain": "hardhat node --network hardhat --no-deploy",
     "compile": "hardhat compile",
     "deploy": "hardhat deploy",
@@ -43,7 +44,7 @@
     "eslint-config-prettier": "~8.5.0",
     "eslint-plugin-prettier": "~4.2.1",
     "ethers": "~6.10.0",
-    "hardhat": "~2.19.4",
+    "hardhat": "^2.22.3",
     "hardhat-deploy": "~0.11.45",
     "hardhat-deploy-ethers": "~0.4.1",
     "hardhat-gas-reporter": "~1.0.9",

@@ -16,6 +16,7 @@ import {
 import { BlockieAvatar, isENS } from "~~/src/components/scaffold-eth";
 import { useOutsideClick } from "~~/src/hooks/scaffold-eth";
 import { getTargetNetworks } from "~~/src/utils/scaffold-eth";
+import { useLotteries } from '~~/src/hooks/scaffold-eth/useLotteries';
 
 const allowedNetworks = getTargetNetworks();
 
@@ -36,7 +37,7 @@ export const AddressInfoDropdown = ({
   const checkSumAddress = getAddress(address);
 
   const [addressCopied, setAddressCopied] = useState(false);
-
+  const { lotteries, loading } = useLotteries(checkSumAddress);
   const [selectingNetwork, setSelectingNetwork] = useState(false);
   const dropdownRef = useRef<HTMLDetailsElement>(null);
   const closeDropdown = () => {
@@ -94,6 +95,15 @@ export const AddressInfoDropdown = ({
               <QrCodeIcon className="h-6 w-4 ml-2 sm:ml-0" />
               <span className="whitespace-nowrap">View QR Code</span>
             </label>
+          </li>
+          <li className={selectingNetwork ? "hidden" : ""}>
+            <button className="btn-sm !rounded-xl flex gap-3 py-3" onClick={() => console.log(lotteries)}>
+              <span>My Lotteries</span>
+            </button>
+            {loading && <p>Loading...</p>}
+            {!loading && lotteries.map(lottery => (
+              <p key={lottery.address}>{lottery.address}</p>
+            ))}
           </li>
           <li className={selectingNetwork ? "hidden" : ""}>
             <button className="menu-item btn-sm !rounded-xl flex gap-3 py-3" type="button">
