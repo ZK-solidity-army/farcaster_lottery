@@ -35,7 +35,7 @@ contract Lottery is AccessControl {
     bool public betsOpen = true;
 
     /// @notice Timestamp of the lottery closing time
-    uint256 public betsClosingTime;
+    uint256 public immutable betsClosingTime;
 
     /// @dev List of bet slots
     address[] public _slots;
