@@ -53,11 +53,15 @@ const handler = frames(async ({ searchParams: { chainId, address } }) => {
         />
         <div tw="flex justify-around text-2xl gap-2">
           <span>Ticket price:</span>
-          <span>{formatEther(totalPrice)} ETH</span>
+          <span>
+            {formatEther(totalPrice)} {targetNetwork.nativeCurrency.symbol}
+          </span>
         </div>
         <div tw="flex justify-around text-2xl gap-2">
           <span>Prize pool:</span>
-          <span>{formatEther(prizePool)} ETH</span>
+          <span>
+            {formatEther(prizePool)} {targetNetwork.nativeCurrency.symbol}
+          </span>
         </div>
       </div>
     ),

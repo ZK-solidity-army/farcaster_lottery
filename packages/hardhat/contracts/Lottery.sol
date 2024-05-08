@@ -14,6 +14,9 @@ contract Lottery is AccessControl {
     bytes32 public constant DEVELOPER_ROLE = keccak256("DEVELOPER_ROLE");
     address public constant DEVELOPER_ADDRESS = 0xD0C1c389A5879da74B035614835A0D98c4c0DD5c;
 
+    /// @notice Name of the lottery
+    string public lotteryName;
+
     uint256 public constant developerFee = 10 ** 15;
     uint256 public ticketPrice;
     uint256 public creatorFee = 0;
@@ -33,8 +36,6 @@ contract Lottery is AccessControl {
 
     /// @notice Timestamp of the lottery closing time
     uint256 public betsClosingTime;
-
-    string lotteryName;
 
     /// @dev List of bet slots
     address[] public _slots;

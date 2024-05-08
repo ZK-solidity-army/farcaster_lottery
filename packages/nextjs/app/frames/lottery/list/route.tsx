@@ -6,7 +6,6 @@ import { CHAIN, RPC_URL } from "~~/config";
 import { getContract } from "~~/src/utils/getContract";
 
 export const POST = frames(async ctx => {
-  console.log(ctx.message);
   if (!ctx.message?.requesterFid) {
     // TODO: make a fallback
     throw new Error("No requesterFid");

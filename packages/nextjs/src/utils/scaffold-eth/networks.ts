@@ -1,10 +1,6 @@
 import * as chains from "viem/chains";
 import scaffoldConfig, { cantoTestnet } from "~~/scaffold.config";
 
-// TODO: create separated chains file
-// @ts-ignore
-chains["cantoTestnet"] = cantoTestnet;
-
 type ChainAttributes = {
   // color | [lightThemeColor, darkThemeColor]
   color: string | [string, string];
@@ -91,6 +87,11 @@ export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
  * Gives the block explorer transaction URL, returns empty string if the network is a local chain
  */
 export function getBlockExplorerTxLink(chainId: number, txnHash: string) {
+  if (chainId === cantoTestnet.id) {
+    const blockExplorerTxURL = cantoTestnet.blockExplorers.default.url;
+    return `${blockExplorerTxURL}/tx/${txnHash}`;
+  }
+
   const chainNames = Object.keys(chains);
 
   const targetChainArr = chainNames.filter(chainName => {

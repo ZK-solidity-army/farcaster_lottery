@@ -2487,6 +2487,7 @@ __metadata:
     qrcode.react: ~3.1.0
     react: ~18.2.0
     react-copy-to-clipboard: ~5.1.0
+    react-countdown: ^2.3.5
     react-dom: ~18.2.0
     react-hot-toast: ~2.4.0
     react-type-animation: ^3.2.0
@@ -12627,7 +12628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -12821,6 +12822,18 @@ __metadata:
   peerDependencies:
     react: ^15.3.0 || 16 || 17 || 18
   checksum: f00a4551b9b63c944a041a6ab46af5ef20ba1106b3bc25173e7ef9bffbfba17a613368682ab8820cfe8d4b3acc5335cd9ce20229145bcc1e6aa8d1db04c512e5
+  languageName: node
+  linkType: hard
+
+"react-countdown@npm:^2.3.5":
+  version: 2.3.5
+  resolution: "react-countdown@npm:2.3.5"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ">= 15"
+    react-dom: ">= 15"
+  checksum: 24289f40591e88003052270e4eb9f7a87838e403ec2036fbd5ef99d57851c8d9739dae619d65f339494e582e34e2691c033a975bd8f7416730fc9beaf76a2b4b
   languageName: node
   linkType: hard
 

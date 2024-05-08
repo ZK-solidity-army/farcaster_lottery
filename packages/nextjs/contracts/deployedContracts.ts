@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/src/utils/scaffold-eth/contract"
 const deployedContracts = {
   7700: {
     Lottery: {
-      address: "0x8c653c4280839DEBA35844D561532e0EebC48024",
+      address: "0x82F2F2d11068336127AA6488FB93219FD7A61694",
       abi: [
         {
           inputs: [
@@ -407,6 +407,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "lotteryName",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "prizePool",
           outputs: [
             {
@@ -532,7 +545,7 @@ const deployedContracts = {
       },
     },
     LotteryDeployer: {
-      address: "0x127425d92192572E0d6B94e4Cd0E82084E8688A1",
+      address: "0x22CCc52349f3efb4f2e79EF37FBa6F5f3BcDd874",
       abi: [
         {
           inputs: [],
@@ -699,7 +712,7 @@ const deployedContracts = {
   },
   7701: {
     Lottery: {
-      address: "0x6a5dA53235d70430714890cfc8d394b54a28D779",
+      address: "0x9f729E6B322d5687AA4e156be46b8bb4284F3e8d",
       abi: [
         {
           inputs: [
@@ -1099,6 +1112,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "lotteryName",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "prizePool",
           outputs: [
             {
@@ -1224,7 +1250,7 @@ const deployedContracts = {
       },
     },
     LotteryDeployer: {
-      address: "0x0c9F9f2416f1F0C19392d1D21F79c9d974682335",
+      address: "0x35D156d53340F693E19666d2FD03F6e9a5106dfc",
       abi: [
         {
           inputs: [],
