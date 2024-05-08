@@ -19,7 +19,7 @@ export const POST = async (req: NextRequest) => {
 
   const publicClient = createPublicClient({
     chain: targetNetwork,
-    transport: http(RPC_URL),
+    transport: http(targetNetwork.rpcUrls?.default?.http?.[0] || RPC_URL),
   });
   const totalPrice = await publicClient.readContract({
     address: contract.address,
