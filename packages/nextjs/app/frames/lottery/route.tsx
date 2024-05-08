@@ -10,6 +10,7 @@ const handler = frames(async ({ searchParams: { chainId, address } }) => {
 
   const targetNetworks = getTargetNetworks();
   const targetNetwork = targetNetworks.find(network => network.id === parseInt(chainId, 10));
+  console.log("chainId", chainId, "address", address);
   if (!targetNetwork) {
     // TODO: make a fallback
     console.log(chainId, targetNetworks);
@@ -17,12 +18,12 @@ const handler = frames(async ({ searchParams: { chainId, address } }) => {
   }
   const client = createPublicClient({
     chain: targetNetwork,
-    transport: http(RPC_URL),
+    transport: http(targetNetwork.rpcUrls?.default?.http?.[0] || RPC_URL),
   });
 
   const contract = getContract("Lottery", targetNetwork.id);
 
-  const [totalPrice, prizePool] = await Promise.all([
+  const [totalPrize, prizePool] = await Promise.all([
     client.readContract({
       address: address,
       abi: contract.abi,
@@ -34,7 +35,7 @@ const handler = frames(async ({ searchParams: { chainId, address } }) => {
       functionName: "prizePool",
     }),
   ]);
-  console.log("totalPrice", totalPrice, "prizePool", prizePool);
+  console.log("totalPrice", totalPrize, "prizePool", prizePool);
 
   return {
     image: (
@@ -54,7 +55,7 @@ const handler = frames(async ({ searchParams: { chainId, address } }) => {
         <div tw="flex justify-around text-2xl gap-2">
           <span>Ticket price:</span>
           <span>
-            {formatEther(totalPrice)} {targetNetwork.nativeCurrency.symbol}
+            {formatEther(totalPrize)} {targetNetwork.nativeCurrency.symbol}
           </span>
         </div>
         <div tw="flex justify-around text-2xl gap-2">
