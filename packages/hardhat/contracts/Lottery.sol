@@ -20,7 +20,7 @@ contract Lottery is AccessControl {
     uint256 public constant developerFee = 10 ** 15;
     uint256 public ticketPrice;
     uint256 public creatorFee = 0;
-    uint256 public totalPrice; // TODO: fix -> totalPrize
+    uint256 public totalPrice;
 
     /// @notice Amount available to withdraw to the lottery creator
     uint256 public creatorPool;

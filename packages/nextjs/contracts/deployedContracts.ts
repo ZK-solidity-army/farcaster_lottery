@@ -1417,15 +1417,10 @@ const deployedContracts = {
   },
   84532: {
     Lottery: {
-      address: "0x37D81993CD14d39C669c08e5EB3A41856cc8c411",
+      address: "0x8E9f8b9bd9bA92025089c34a59449BF8960f4268",
       abi: [
         {
           inputs: [
-            {
-              internalType: "uint256",
-              name: "duration",
-              type: "uint256",
-            },
             {
               internalType: "string",
               name: "_lotteryName",
@@ -1433,11 +1428,26 @@ const deployedContracts = {
             },
             {
               internalType: "uint256",
-              name: "_starterFee",
+              name: "_ticketPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_creatorFee",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_deposit",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_duration",
               type: "uint256",
             },
           ],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "constructor",
         },
         {
@@ -1557,6 +1567,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "CREATOR_ROLE",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "DEFAULT_ADMIN_ROLE",
           outputs: [
             {
@@ -1570,51 +1593,25 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "DEVELOPER_ADDRESS",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "DEVELOPER_ROLE",
           outputs: [
             {
               internalType: "bytes32",
               name: "",
               type: "bytes32",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "DEV_FEE",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "STARTER_ROLE",
-          outputs: [
-            {
-              internalType: "bytes32",
-              name: "",
-              type: "bytes32",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "TICKET_PRICE",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -1690,6 +1687,45 @@ const deployedContracts = {
           name: "closeLottery",
           outputs: [],
           stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "creatorFee",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "creatorPool",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "developerFee",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {
@@ -1781,6 +1817,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "lotteryName",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "prizePool",
           outputs: [
             {
@@ -1829,32 +1878,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
-          name: "starterFee",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "starterPool",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [
             {
               internalType: "bytes4",
@@ -1875,6 +1898,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "ticketPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "totalPrice",
           outputs: [
             {
@@ -1884,6 +1920,13 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdrawDeveloperFees",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -1912,7 +1955,7 @@ const deployedContracts = {
       },
     },
     LotteryDeployer: {
-      address: "0x6E570a06A3A24EE270391468624D003C19b1ec88",
+      address: "0x62EEa16c891A9eff2016Af6E17600d38622f8342",
       abi: [
         {
           inputs: [],
@@ -1963,24 +2006,34 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "uint256",
-              name: "duration",
-              type: "uint256",
-            },
-            {
               internalType: "string",
-              name: "lotteryName",
+              name: "_lotteryName",
               type: "string",
             },
             {
               internalType: "uint256",
-              name: "starterFee",
+              name: "_ticketPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_creatorFee",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_deposit",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_duration",
               type: "uint256",
             },
           ],
           name: "createLottery",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {
