@@ -26,7 +26,7 @@ export default function LotteryPage({
     abi: getContract("Lottery", _chainId).abi,
     watch: true,
   };
-  const { data } = useReadContracts({
+  const { data, isFetched } = useReadContracts({
     contracts: [
       {
         ...lotteryContractData,
@@ -148,29 +148,34 @@ export default function LotteryPage({
           Cast to Warpcast <BoltIcon className="w-4 h-4" />
         </Link>
       </div>
-      {betsOpen ? (
-        betsClosingTime && betsClosingTime > Math.ceil(new Date().valueOf() / 1000) ? (
-          <div className="my-16">
-            <h2 className="mb-2">Lottery closes in</h2>
-            <div>
-              <Countdown date={new Date(Number(betsClosingTime) * 1000)} renderer={CountdownRenderer} />
+      {isFetched && (
+        <>
+          {betsOpen ? (
+            betsClosingTime && betsClosingTime > Math.ceil(new Date().valueOf() / 1000) ? (
+              <div className="my-16">
+                <h2 className="mb-2">Lottery closes in</h2>
+                <div>
+                  <Countdown date={new Date(Number(betsClosingTime) * 1000)} renderer={CountdownRenderer} />
+                </div>
+              </div>
+            ) : (
+              <div className="my-16">
+                <button className="btn btn-secondary mt-5" onClick={() => console.log("Bets are closed")}>
+                  Close the lottery
+                </button>
+              </div>
+            )
+          ) : null}
+
+          {!betsOpen && isCreator ? (
+            <div className="my-16">
+              <button className="btn btn-secondary mt-5" onClick={() => console.log("Creator actions")}>
+                Claim your fees
+              </button>
             </div>
-          </div>
-        ) : (
-          <div className="my-16">
-            <button className="btn btn-secondary mt-5" onClick={() => console.log("Bets are closed")}>
-              Close the lottery
-            </button>
-          </div>
-        )
-      ) : null}
-      {!betsOpen && isCreator ? (
-        <div className="my-16">
-          <button className="btn btn-secondary mt-5" onClick={() => console.log("Creator actions")}>
-            Claim your fees
-          </button>
-        </div>
-      ) : null}
+          ) : null}
+        </>
+      )}
     </div>
   );
 }
