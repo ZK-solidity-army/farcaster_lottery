@@ -1,6 +1,7 @@
 # Farcaster Lottery ![lint](https://github.com/ZK-solidity-army/farcaster_lottery/actions/workflows/lint.yaml/badge.svg) ![deploy](https://github.com/ZK-solidity-army/farcaster_lottery/actions/workflows/deploy.yaml/badge.svg)
 
-https://farcaster-lottery.xyz
+- https://farcaster-lottery.xyz
+- [Docs](https://farcaster-lottery.gitbook.io/docs)
 
 ## Quickstart
 
